@@ -1,0 +1,56 @@
+# Backend (.NET)
+PharmacyManagement.Backend/bin/
+PharmacyManagement.Backend/obj/
+PharmacyManagement.Backend/.vs/
+PharmacyManagement.Backend/.vscode/
+PharmacyManagement.Backend/*.user
+PharmacyManagement.Backend/*.suo
+PharmacyManagement.Backend/*.sln.docstates
+PharmacyManagement.Backend/.DS_Store
+PharmacyManagement.Backend/appsettings.*.json
+!PharmacyManagement.Backend/appsettings.json
+!PharmacyManagement.Backend/appsettings.Development.json
+
+# Frontend (React/Node)
+PharmacyManagement.Frontend/node_modules/
+PharmacyManagement.Frontend/.pnp
+PharmacyManagement.Frontend/.pnp.js
+PharmacyManagement.Frontend/build/
+PharmacyManagement.Frontend/dist/
+PharmacyManagement.Frontend/.eslintcache
+PharmacyManagement.Frontend/.env
+PharmacyManagement.Frontend/.env.local
+PharmacyManagement.Frontend/.env.development.local
+PharmacyManagement.Frontend/.env.test.local
+PharmacyManagement.Frontend/.env.production.local
+PharmacyManagement.Frontend/npm-debug.log*
+PharmacyManagement.Frontend/yarn-debug.log*
+PharmacyManagement.Frontend/yarn-error.log*
+PharmacyManagement.Frontend/.DS_Store
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+*.iml
+
+# Database
+*.mdf
+*.ldf
+*.ndf
+
+# Logs
+*.log
+logs/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Misc
+.env
+.env.local
+.env.*.local
