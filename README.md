@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Hệ Thống Quản Lý Tiệm Thuốc Mini
 
 ## Giới Thiệu
@@ -261,3 +262,6 @@ npm start
 
 ## Giấy Phép
 Dự án này được cấp phép dưới MIT License.
+=======
+# Nhom8_QuanLyTiemThuocMini
+>>>>>>> 3ecca45c580a28f8bb1b137d48cf405f028d0648
