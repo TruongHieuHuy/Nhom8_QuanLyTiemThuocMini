@@ -9,6 +9,8 @@ import CustomersPage from './pages/CustomersPage';
 import OrdersPage from './pages/OrdersPage';
 import ReportsPage from './pages/ReportsPage';
 import LoginPage from './pages/LoginPage';
+import ProfilePage from './pages/ProfilePage';
+import CategoriesPage from './pages/CategoriesPage';
 import useStore from './store';
 import './App.css';
 
@@ -82,6 +84,32 @@ function App() {
               user ? (
                 <Layout>
                   <ReportsPage />
+                </Layout>
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+
+          <Route
+            path="/profile"
+            element={
+              user ? (
+                <Layout>
+                  <ProfilePage />
+                </Layout>
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+
+          <Route
+            path="/categories"
+            element={
+              user ? (
+                <Layout>
+                  <CategoriesPage />
                 </Layout>
               ) : (
                 <Navigate to="/login" />

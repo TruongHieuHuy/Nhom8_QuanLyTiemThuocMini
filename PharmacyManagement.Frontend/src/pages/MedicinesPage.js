@@ -36,9 +36,11 @@ export default function MedicinesPage() {
   const fetchGroups = async () => {
     try {
       const res = await axios.get(GROUP_API_URL);
-      setGroups(res.data);
+      // API trả về {message, data: [...]}
+      setGroups(Array.isArray(res.data.data) ? res.data.data : res.data);
     } catch (err) {
       console.error('Lỗi tải nhóm thuốc:', err);
+      setGroups([]);
     }
   };
 
@@ -174,7 +176,9 @@ export default function MedicinesPage() {
                 <Col span={12}>
                     <Form.Item name="medicineGroupId" label="Nhóm thuốc" rules={[{ required: true }]}>
                         <Select placeholder="Chọn nhóm">
-                            {groups.map(g => <Select.Option key={g.id} value={g.id}>{g.name}</Select.Option>)}
+                            {Array.isArray(groups) && groups.map(g => (
+                              <Select.Option key={g.id} value={g.id}>{g.name || 'N/A'}</Select.Option>
+                            ))}
                         </Select>
                     </Form.Item>
                 </Col>

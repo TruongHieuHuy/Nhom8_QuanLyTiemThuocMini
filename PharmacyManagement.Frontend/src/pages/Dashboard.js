@@ -9,6 +9,8 @@ import {
 } from '@ant-design/icons';
 import axios from 'axios';
 
+const API_BASE_URL = 'http://localhost:5000/api';
+
 export default function Dashboard() {
   const [stats, setStats] = useState({
     totalMedicines: 0,
@@ -26,12 +28,18 @@ export default function Dashboard() {
 
   const fetchDashboardData = async () => {
     try {
+      const token = localStorage.getItem('token');
+      const headers = {
+        'Content-Type': 'application/json',
+        ...(token && { Authorization: `Bearer ${token}` })
+      };
+
       // 1. Gọi API Thống kê tổng hợp (Cái file Controller mới tạo)
-      const statsRes = await axios.get('http://localhost:5000/api/Dashboard/stats');
+      const statsRes = await axios.get(`${API_BASE_URL}/Dashboard/stats`, { headers });
       setStats(statsRes.data);
 
       // 2. Gọi API lấy danh sách thuốc để lọc thuốc sắp hết hiện ra bảng
-      const medRes = await axios.get('http://localhost:5000/api/Medicines');
+      const medRes = await axios.get(`${API_BASE_URL}/Medicines`, { headers });
       setMedicines(medRes.data.filter(m => m.currentStock <= m.minStockLevel));
 
     } catch (error) {

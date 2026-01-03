@@ -19,6 +19,7 @@ namespace PharmacyManagement.Models
         public DateTime StartDate { get; set; }
         public decimal Salary { get; set; }
         public string Status { get; set; }
+        public string AvatarUrl { get; set; }
 
         // --- SỬA LẠI KHÓA NGOẠI LÀ SỐ NGUYÊN (INT) ---
         public int? UserAccountId { get; set; } 

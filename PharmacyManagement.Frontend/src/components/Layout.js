@@ -12,7 +12,7 @@ import {
   BarChartOutlined,
   BellOutlined,
 } from '@ant-design/icons';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import useStore from '../store';
 import './Layout.css';
 
@@ -20,9 +20,29 @@ const { Sider, Content, Header } = Layout;
 
 export default function MainLayout({ children }) {
   const [collapsed, setCollapsed] = useState(false);
-  const [notifications, setNotifications] = useState(3);
+  const [avatarUrl, setAvatarUrl] = useState(null);
+  const [displayName, setDisplayName] = useState('Người dùng');
   const { user, logout } = useStore();
   const location = useLocation();
+
+  useEffect(() => {
+    // Update display name and avatar from user store
+    if (user?.fullName) {
+      setDisplayName(user.fullName);
+    } else if (user?.username) {
+      setDisplayName(user.username);
+    }
+    
+    // Load avatar từ user store hoặc localStorage
+    if (user?.avatarUrl) {
+      setAvatarUrl(user.avatarUrl);
+    } else if (user?.id) {
+      const savedAvatar = localStorage.getItem(`avatar_${user.id}`);
+      if (savedAvatar) {
+        setAvatarUrl(savedAvatar);
+      }
+    }
+  }, [user]);
 
   const handleLogout = () => {
     logout();
@@ -39,6 +59,11 @@ export default function MainLayout({ children }) {
       key: '/medicines',
       icon: <MedicineBoxOutlined />,
       label: 'Quản lý thuốc',
+    },
+    {
+      key: '/categories',
+      icon: <FileTextOutlined />,
+      label: 'Quản lý danh mục',
     },
     {
       key: '/customers',
@@ -113,7 +138,7 @@ export default function MainLayout({ children }) {
 
           <div className="header-right">
             <Badge
-              count={notifications}
+              count={3}
               showZero
               style={{ cursor: 'pointer' }}
             >
@@ -121,9 +146,14 @@ export default function MainLayout({ children }) {
             </Badge>
 
             <Dropdown menu={{ items: userMenuItems }}>
-              <div style={{ marginLeft: '20px', cursor: 'pointer' }}>
-                <Avatar icon={<UserOutlined />} />
-                <span style={{ marginLeft: '8px' }}>{user?.fullName || 'Người dùng'}</span>
+              <div style={{ marginLeft: '20px', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+                <Avatar 
+                  size={32}
+                  src={avatarUrl}
+                  icon={<UserOutlined />}
+                  style={{ backgroundColor: '#667eea' }}
+                />
+                <span style={{ marginLeft: '8px', fontWeight: 500 }}>{displayName}</span>
               </div>
             </Dropdown>
           </div>
