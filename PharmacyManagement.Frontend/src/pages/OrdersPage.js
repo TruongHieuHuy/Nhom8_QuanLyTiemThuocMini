@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Row, Col, Card, Table, Button, Input, List, Typography, message, Tag, Divider, Select, Empty, Space } from 'antd';
 import { ShoppingCartOutlined, DeleteOutlined, SearchOutlined, UserOutlined, PlusOutlined } from '@ant-design/icons';
-import axios from 'axios';
+import axios from '../utils/axiosConfig';
 
 const { Title, Text } = Typography;
 const { Option } = Select;
 
 // Đảm bảo cổng này đúng với Backend của bạn
-const API_MEDICINES = 'http://localhost:5000/api/Medicines';
-const API_ORDERS = 'http://localhost:5000/api/Orders';
-const API_VNPAY_CREATE = 'http://localhost:5000/api/Payments/vnpay/create';
+const API_MEDICINES = '/Medicines';
+const API_ORDERS = '/Orders';
+const API_VNPAY_CREATE = '/Payments/vnpay/create';
 
 export default function OrdersPage() {
   const [medicines, setMedicines] = useState([]);

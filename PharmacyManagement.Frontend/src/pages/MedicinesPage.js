@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Space, Modal, Form, Input, InputNumber, Select, message, Tag, Card, Row, Col, DatePicker } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined, ReloadOutlined } from '@ant-design/icons';
-import axios from 'axios';
+import axios from '../utils/axiosConfig';
 import dayjs from 'dayjs';
 
-const API_URL = 'http://localhost:5000/api/Medicines';
-const GROUP_API_URL = 'http://localhost:5000/api/MedicineGroups'; 
+const API_URL = '/Medicines';
+const GROUP_API_URL = '/MedicineGroups'; 
 
 export default function MedicinesPage() {
   const [medicines, setMedicines] = useState([]);

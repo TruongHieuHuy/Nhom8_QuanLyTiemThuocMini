@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Form, Input, Button, Card, Avatar, Upload, message, Spin, Row, Col } from 'antd';
 import { UserOutlined, CameraOutlined } from '@ant-design/icons';
 import useStore from '../store';
+import axios from '../utils/axiosConfig';
 import './ProfilePage.css';
 
 export default function ProfilePage() {
@@ -12,8 +13,6 @@ export default function ProfilePage() {
   const [avatarPreview, setAvatarPreview] = useState(null);
   const { user, setUser } = useStore();
 
-  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000/api';
-
   // Lấy thông tin profile khi component mount
   useEffect(() => {
     fetchProfile();
@@ -22,32 +21,20 @@ export default function ProfilePage() {
   const fetchProfile = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`${API_BASE_URL}/profile`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`API Error: ${response.status}`);
-      }
-
-      const data = await response.json();
-      setProfile(data.data);
-      setAvatarPreview(data.data.avatarUrl);
+      const response = await axios.get('/profile');
+      setProfile(response.data.data);
+      setAvatarPreview(response.data.data.avatarUrl);
 
       // Set form values
       form.setFieldsValue({
-        username: data.data.username,
-        email: data.data.email,
-        fullName: data.data.fullName,
-        phoneNumber: data.data.phoneNumber,
-        address: data.data.address,
+        username: response.data.data.username,
+        email: response.data.data.email,
+        fullName: response.data.data.fullName,
+        phoneNumber: response.data.data.phoneNumber,
+        address: response.data.data.address,
       });
     } catch (error) {
-      message.error('Lỗi khi lấy thông tin tài khoản');
+      message.error('Lỗi khi lấy thông tin tài khoản: ' + (error.response?.data?.message || error.message));
       console.error('Fetch error:', error);
     } finally {
       setLoading(false);
@@ -57,26 +44,14 @@ export default function ProfilePage() {
   const handleUpdateProfile = async (values) => {
     setSubmitting(true);
     try {
-      const response = await fetch(`${API_BASE_URL}/profile`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-        body: JSON.stringify({
-          fullName: values.fullName,
-          email: values.email,
-          phoneNumber: values.phoneNumber,
-          address: values.address,
-        }),
+      const response = await axios.put('/profile', {
+        fullName: values.fullName,
+        email: values.email,
+        phoneNumber: values.phoneNumber,
+        address: values.address,
       });
 
-      if (!response.ok) {
-        throw new Error(`API Error: ${response.status}`);
-      }
-
-      const data = await response.json();
-      message.success(data.message || 'Cập nhật thông tin thành công');
+      message.success(response.data.message || 'Cập nhật thông tin thành công');
 
       // Cập nhật store
       const updatedUser = {
@@ -89,7 +64,7 @@ export default function ProfilePage() {
 
       fetchProfile();
     } catch (error) {
-      message.error('Lỗi khi cập nhật thông tin');
+      message.error('Lỗi khi cập nhật thông tin: ' + (error.response?.data?.message || error.message));
       console.error('Update error:', error);
     } finally {
       setSubmitting(false);
@@ -123,23 +98,16 @@ export default function ProfilePage() {
 
     setSubmitting(true);
     try {
-      const response = await fetch(`${API_BASE_URL}/profile/upload-avatar`, {
-        method: 'POST',
+      const response = await axios.post('/profile/upload-avatar', formData, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'multipart/form-data',
         },
-        body: formData,
       });
 
-      if (!response.ok) {
-        throw new Error(`API Error: ${response.status}`);
-      }
-
-      const data = await response.json();
-      message.success(data.message || 'Cập nhật ảnh đại diện thành công');
+      message.success(response.data.message || 'Cập nhật ảnh đại diện thành công');
 
       // Cập nhật preview với URL từ server
-      const fullAvatarUrl = data.data.avatarUrl;
+      const fullAvatarUrl = response.data.data.avatarUrl;
       setAvatarPreview(fullAvatarUrl);
 
       // Cập nhật store
@@ -152,7 +120,7 @@ export default function ProfilePage() {
 
       fetchProfile();
     } catch (error) {
-      message.error('Lỗi khi upload ảnh');
+      message.error('Lỗi khi upload ảnh: ' + (error.response?.data?.message || error.message));
       console.error('Upload error:', error);
     } finally {
       setSubmitting(false);

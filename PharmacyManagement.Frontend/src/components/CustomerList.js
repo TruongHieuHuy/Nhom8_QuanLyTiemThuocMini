@@ -62,10 +62,7 @@ export default function CustomerList() {
   const handleSubmit = async (values) => {
     try {
       if (editingCustomer) {
-        await customerService.update({
-          ...editingCustomer,
-          ...values,
-        });
+        await customerService.update(editingCustomer.id, values);
         message.success('Cập nhật khách hàng thành công');
       } else {
         await customerService.create(values);
@@ -74,7 +71,8 @@ export default function CustomerList() {
       setIsModalVisible(false);
       fetchCustomers();
     } catch (err) {
-      message.error('Lỗi khi lưu khách hàng');
+      console.error('Error saving customer:', err);
+      message.error('Lỗi khi lưu khách hàng: ' + (err.response?.data?.message || err.message));
     }
   };
 
@@ -149,7 +147,7 @@ export default function CustomerList() {
 
       <Modal
         title={editingCustomer ? 'Sửa thông tin khách hàng' : 'Thêm khách hàng mới'}
-        visible={isModalVisible}
+        open={isModalVisible}
         onOk={() => form.submit()}
         onCancel={() => setIsModalVisible(false)}
       >

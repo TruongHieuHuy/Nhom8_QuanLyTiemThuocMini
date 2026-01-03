@@ -50,6 +50,7 @@ namespace PharmacyManagement.DTOs
         public string Manufacturer { get; set; }
         public decimal Price { get; set; }
         public DateTime ExpiryDate { get; set; }
+        public int CurrentStock { get; set; }
         public int MinStockLevel { get; set; }
         public string Unit { get; set; }
         public string Barcode { get; set; }

@@ -51,8 +51,7 @@ namespace PharmacyManagement.Backend
                     {
                         builder.WithOrigins("http://localhost:3000", "http://localhost:3001") // Cho phép cả port 3000 và 3001
                                .AllowAnyMethod()
-                               .AllowAnyHeader()
-                               .AllowCredentials();
+                               .AllowAnyHeader();
                     });
             });
 

@@ -20,7 +20,7 @@ export const customerService = {
   getDetail: (id) => apiClient.get(`/customers/detail/${id}`),
   search: (searchTerm) => apiClient.get(`/customers/search/${searchTerm}`),
   create: (data) => apiClient.post('/customers', data),
-  update: (data) => apiClient.put('/customers', data),
+  update: (id, data) => apiClient.put(`/customers/${id}`, data),
   delete: (id) => apiClient.delete(`/customers/${id}`),
 };
 

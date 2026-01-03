@@ -28,13 +28,12 @@ namespace PharmacyManagement.Services
 
         public async Task<IEnumerable<SupplierDTO>> GetAllSuppliersAsync()
         {
-            return await System.Threading.Tasks.Task.Run(() =>
-            {
-                return _context.Suppliers
+            var suppliers = await System.Threading.Tasks.Task.Run(() =>
+                _context.Suppliers
                     .Where(s => s.IsActive)
-                    .Select(s => MapToDTO(s))
-                    .ToList();
-            });
+                    .ToList()
+            );
+            return suppliers.Select(s => MapToDTO(s));
         }
 
         public async Task<SupplierDTO> GetSupplierByIdAsync(int id)
@@ -47,17 +46,16 @@ namespace PharmacyManagement.Services
 
         public async Task<IEnumerable<SupplierDTO>> SearchSuppliersAsync(string searchTerm)
         {
-            return await System.Threading.Tasks.Task.Run(() =>
-            {
-                return _context.Suppliers
+            var suppliers = await System.Threading.Tasks.Task.Run(() =>
+                _context.Suppliers
                     .Where(s => s.IsActive && (
                         s.Name.Contains(searchTerm) ||
                         s.PhoneNumber.Contains(searchTerm) ||
                         s.Email.Contains(searchTerm)
                     ))
-                    .Select(s => MapToDTO(s))
-                    .ToList();
-            });
+                    .ToList()
+            );
+            return suppliers.Select(s => MapToDTO(s));
         }
 
         public async Task<SupplierDTO> CreateSupplierAsync(CreateSupplierDTO createDto)

@@ -9,6 +9,7 @@ import CustomersPage from './pages/CustomersPage';
 import OrdersPage from './pages/OrdersPage';
 import ReportsPage from './pages/ReportsPage';
 import PaymentHistoryPage from './pages/PaymentHistoryPage';
+import SuppliersPage from './pages/SuppliersPage';
 import LoginPage from './pages/LoginPage';
 import ProfilePage from './pages/ProfilePage';
 import CategoriesPage from './pages/CategoriesPage';
@@ -93,7 +94,8 @@ function App() {
               )
             }
           />
-<Route
+
+          <Route
             path="/reports"
             element={
               user ? (
@@ -125,6 +127,19 @@ function App() {
               user ? (
                 <Layout>
                   <CategoriesPage />
+                </Layout>
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+
+          <Route
+            path="/suppliers"
+            element={
+              user ? (
+                <Layout>
+                  <SuppliersPage />
                 </Layout>
               ) : (
                 <Navigate to="/login" />

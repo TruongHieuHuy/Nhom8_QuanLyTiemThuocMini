@@ -155,7 +155,7 @@ export default function MedicineList() {
 
       <Modal
         title={editingMedicine ? 'Sửa thông tin thuốc' : 'Thêm thuốc mới'}
-        visible={isModalVisible}
+        open={isModalVisible}
         onOk={() => form.submit()}
         onCancel={() => setIsModalVisible(false)}
       >

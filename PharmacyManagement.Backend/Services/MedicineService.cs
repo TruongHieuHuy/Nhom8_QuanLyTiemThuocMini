@@ -103,6 +103,25 @@ namespace PharmacyManagement.Services
 
             _context.Medicines.Add(medicine);
             await _context.SaveChangesAsync();
+
+            // Tự động ghi vào InventoryHistories khi tạo thuốc mới
+            if (createDto.CurrentStock > 0)
+            {
+                var history = new InventoryHistory
+                {
+                    MedicineId = medicine.Id,
+                    TransactionType = "Import",
+                    Quantity = createDto.CurrentStock,
+                    StockBefore = 0,
+                    StockAfter = createDto.CurrentStock,
+                    Reason = "Nhập kho lần đầu",
+                    Notes = $"Thêm mới thuốc với số lượng {createDto.CurrentStock}",
+                    CreatedDate = System.DateTime.Now
+                };
+                _context.InventoryHistories.Add(history);
+                await _context.SaveChangesAsync();
+            }
+
             return MapToDTO(medicine);
         }
 
@@ -115,6 +134,9 @@ namespace PharmacyManagement.Services
             if (medicine == null)
                 return null;
 
+            // Lưu tồn kho cũ để so sánh
+            var oldStock = medicine.CurrentStock;
+
             medicine.Name = updateDto.Name;
             medicine.Description = updateDto.Description;
             medicine.MedicineGroupId = updateDto.MedicineGroupId;
@@ -123,6 +145,7 @@ namespace PharmacyManagement.Services
             medicine.Manufacturer = updateDto.Manufacturer;
             medicine.Price = updateDto.Price;
             medicine.ExpiryDate = updateDto.ExpiryDate;
+            medicine.CurrentStock = updateDto.CurrentStock;
             medicine.MinStockLevel = updateDto.MinStockLevel;
             medicine.Unit = updateDto.Unit;
             medicine.Barcode = updateDto.Barcode;
@@ -131,6 +154,29 @@ namespace PharmacyManagement.Services
 
             _context.Medicines.Update(medicine);
             await _context.SaveChangesAsync();
+
+            // Ghi lịch sử thay đổi tồn kho nếu có sự thay đổi
+            if (updateDto.CurrentStock != oldStock)
+            {
+                var transactionType = updateDto.CurrentStock > oldStock ? "Import" : "Export";
+                var quantity = Math.Abs(updateDto.CurrentStock - oldStock);
+                var reason = updateDto.CurrentStock > oldStock ? "Nhập thêm thuốc vào kho" : "Xuất điều chỉnh tồn kho";
+                
+                var history = new InventoryHistory
+                {
+                    MedicineId = medicine.Id,
+                    TransactionType = transactionType,
+                    Quantity = quantity,
+                    StockBefore = oldStock,
+                    StockAfter = updateDto.CurrentStock,
+                    Reason = reason,
+                    Notes = $"Cập nhật từ {oldStock} sang {updateDto.CurrentStock}",
+                    CreatedDate = System.DateTime.Now
+                };
+                _context.InventoryHistories.Add(history);
+                await _context.SaveChangesAsync();
+            }
+
             return MapToDTO(medicine);
         }
 
