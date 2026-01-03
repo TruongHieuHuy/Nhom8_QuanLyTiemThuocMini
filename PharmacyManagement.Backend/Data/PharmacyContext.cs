@@ -25,7 +25,7 @@ namespace PharmacyManagement.Data
         // QUAN TRỌNG: Phải có 2 dòng này thì Dashboard mới đọc được đơn hàng
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderDetail> OrderDetails { get; set; }
-
+        public DbSet<PaymentTransaction> PaymentTransactions { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -94,6 +94,11 @@ namespace PharmacyManagement.Data
                 .Property(od => od.TotalPrice)
                 .HasPrecision(18, 2);
 
+            // PaymentTransaction
+            modelBuilder.Entity<PaymentTransaction>()
+                .Property(pt => pt.Amount)
+                .HasPrecision(18, 2);
+            
             // PurchaseOrder
             modelBuilder.Entity<PurchaseOrder>()
                 .Property(po => po.TotalCost)

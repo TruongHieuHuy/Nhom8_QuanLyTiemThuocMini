@@ -1,4 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using PharmacyManagement.Data;
+using PharmacyManagement.Models;
 using PharmacyManagement.DTOs;
 using PharmacyManagement.Services;
 using System;
@@ -14,11 +17,13 @@ namespace PharmacyManagement.Controllers
     {
         private readonly IOrderService _orderService;
         private readonly IVnPayService _vnPayService;
+        private readonly PharmacyContext _context;
 
-        public PaymentsController(IOrderService orderService, IVnPayService vnPayService)
+        public PaymentsController(IOrderService orderService, IVnPayService vnPayService, PharmacyContext context)
         {
             _orderService = orderService;
             _vnPayService = vnPayService;
+            _context = context;
         }
 
         // 1) Tạo đơn PendingPayment + trả về URL VNPay để redirect
@@ -37,6 +42,22 @@ namespace PharmacyManagement.Controllers
                     forcedPaymentMethod: "VNPay",
                     forcedStatus: "PendingPayment"
                 );
+
+
+                // Payment history: create pending transaction
+                _context.PaymentTransactions.Add(new PaymentTransaction
+                {
+                    OrderId = result.OrderId,
+                    OrderCode = result.OrderCode,
+                    Provider = "VNPay",
+                    PaymentMethod = "VNPay",
+                    Amount = result.Total,
+                    Currency = "VND",
+                    Status = "Pending",
+                    TxnRef = result.OrderCode,
+                    CreatedAt = DateTime.UtcNow
+                });
+                await _context.SaveChangesAsync();
 
                 // VNPay dùng đơn vị *100
                 var amountTimes100 = (long)decimal.Round(result.Total * 100, 0);
@@ -90,14 +111,50 @@ namespace PharmacyManagement.Controllers
 
             var ok = responseCode == "00" && (string.IsNullOrWhiteSpace(transStatus) || transStatus == "00");
 
+            var rawJson = System.Text.Json.JsonSerializer.Serialize(dict);
+
+            // update latest pending transaction for this order
+            var tx = await _context.PaymentTransactions
+                .OrderByDescending(t => t.Id)
+                .FirstOrDefaultAsync(t => t.OrderCode == txnRef && t.Status == "Pending");
+            if (tx != null)
+            {
+                tx.ResponseCode = responseCode;
+                tx.TransactionNo = dict.ContainsKey("vnp_TransactionNo") ? dict["vnp_TransactionNo"] : null;
+                tx.BankCode = dict.ContainsKey("vnp_BankCode") ? dict["vnp_BankCode"] : null;
+                tx.PayDate = dict.ContainsKey("vnp_PayDate") ? dict["vnp_PayDate"] : null;
+                tx.RawData = rawJson;
+                tx.UpdatedAt = DateTime.UtcNow;
+            }
+
             if (ok)
             {
                 var paid = await _orderService.MarkOrderPaidAsync(txnRef);
+
+                if (tx != null && paid)
+                {
+                    tx.Status = "Success";
+                    tx.UpdatedAt = DateTime.UtcNow;
+                    await _context.SaveChangesAsync();
+                }
+                if (tx != null && paid)
+                {
+                    tx.Status = "Success";
+                    tx.UpdatedAt = DateTime.UtcNow;
+                    await _context.SaveChangesAsync();
+                }
                 return Redirect($"{fe}?vnpay=1&status={(paid ? "success" : "failed")}&orderCode={txnRef}");
             }
             else
             {
                 await _orderService.MarkOrderFailedAsync(txnRef, $"VNPay return fail: {responseCode}/{transStatus}");
+
+            if (tx != null)
+            {
+                tx.Status = "Failed";
+                tx.UpdatedAt = DateTime.UtcNow;
+                await _context.SaveChangesAsync();
+            }
                 return Redirect($"{fe}?vnpay=1&status=failed&orderCode={txnRef}");
             }
         }
@@ -122,6 +179,22 @@ namespace PharmacyManagement.Controllers
 
             var ok = responseCode == "00" && (string.IsNullOrWhiteSpace(transStatus) || transStatus == "00");
 
+            var rawJson = System.Text.Json.JsonSerializer.Serialize(dict);
+
+            // update latest pending transaction for this order
+            var tx = await _context.PaymentTransactions
+                .OrderByDescending(t => t.Id)
+                .FirstOrDefaultAsync(t => t.OrderCode == txnRef && t.Status == "Pending");
+            if (tx != null)
+            {
+                tx.ResponseCode = responseCode;
+                tx.TransactionNo = dict.ContainsKey("vnp_TransactionNo") ? dict["vnp_TransactionNo"] : null;
+                tx.BankCode = dict.ContainsKey("vnp_BankCode") ? dict["vnp_BankCode"] : null;
+                tx.PayDate = dict.ContainsKey("vnp_PayDate") ? dict["vnp_PayDate"] : null;
+                tx.RawData = rawJson;
+                tx.UpdatedAt = DateTime.UtcNow;
+            }
+
             if (ok)
             {
                 var paid = await _orderService.MarkOrderPaidAsync(txnRef);
@@ -129,7 +202,84 @@ namespace PharmacyManagement.Controllers
             }
 
             await _orderService.MarkOrderFailedAsync(txnRef, $"VNPay IPN fail: {responseCode}/{transStatus}");
+            if (tx != null)
+            {
+                tx.Status = "Failed";
+                tx.UpdatedAt = DateTime.UtcNow;
+                await _context.SaveChangesAsync();
+            }
             return Ok(new { RspCode = "00", Message = "Confirm Success" });
         }
+
+        // 3) Payment history (for UI)
+        // GET: /api/Payments/history?orderCode=...&status=...&provider=...&from=2026-01-01&to=2026-01-31&page=1&pageSize=20
+        [HttpGet("history")]
+        public async Task<ActionResult<PaymentHistoryResponseDTO>> GetPaymentHistory(
+            [FromQuery] string orderCode = null,
+            [FromQuery] string status = null,
+            [FromQuery] string provider = null,
+            [FromQuery] DateTime? from = null,
+            [FromQuery] DateTime? to = null,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 20
+        )
+        {
+            if (page <= 0) page = 1;
+            if (pageSize <= 0) pageSize = 20;
+            if (pageSize > 200) pageSize = 200;
+
+            var query = _context.PaymentTransactions.AsNoTracking();
+
+            if (!string.IsNullOrWhiteSpace(orderCode))
+                query = query.Where(t => t.OrderCode.Contains(orderCode));
+
+            if (!string.IsNullOrWhiteSpace(status))
+                query = query.Where(t => t.Status == status);
+
+            if (!string.IsNullOrWhiteSpace(provider))
+                query = query.Where(t => t.Provider == provider || t.PaymentMethod == provider);
+
+            if (from.HasValue)
+                query = query.Where(t => t.CreatedAt >= from.Value.ToUniversalTime());
+
+            if (to.HasValue)
+                query = query.Where(t => t.CreatedAt <= to.Value.ToUniversalTime());
+
+            var total = await query.CountAsync();
+
+            var items = await query
+                .OrderByDescending(t => t.Id)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(t => new PaymentHistoryItemDTO
+                {
+                    Id = t.Id,
+                    OrderId = t.OrderId,
+                    OrderCode = t.OrderCode,
+                    Provider = t.Provider,
+                    PaymentMethod = t.PaymentMethod,
+                    Amount = t.Amount,
+                    Currency = t.Currency,
+                    Status = t.Status,
+                    TxnRef = t.TxnRef,
+                    TransactionNo = t.TransactionNo,
+                    ResponseCode = t.ResponseCode,
+                    BankCode = t.BankCode,
+                    PayDate = t.PayDate,
+                    RawData = t.RawData,
+                    CreatedAt = t.CreatedAt,
+                    UpdatedAt = t.UpdatedAt
+                })
+                .ToListAsync();
+
+            return Ok(new PaymentHistoryResponseDTO
+            {
+                Total = total,
+                Page = page,
+                PageSize = pageSize,
+                Items = items
+            });
+        }
+
     }
 }

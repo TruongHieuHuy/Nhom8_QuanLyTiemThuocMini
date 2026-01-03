@@ -46,3 +46,21 @@ export const reportService = {
   getOutOfStock: () => apiClient.get('/reports/out-of-stock'),
   getOrdersCount: (date) => apiClient.get(`/reports/orders-count/${date}`),
 };
+
+// Payment Services
+export const paymentService = {
+  getHistory: (params = {}) => {
+    const qs = new URLSearchParams();
+
+    if (params.orderCode) qs.append('orderCode', params.orderCode);
+    if (params.provider) qs.append('provider', params.provider);
+    if (params.status) qs.append('status', params.status);
+    if (params.from) qs.append('from', params.from); // yyyy-mm-dd hoặc ISO tùy backend bạn xử lý
+    if (params.to) qs.append('to', params.to);
+    if (params.page) qs.append('page', params.page);
+    if (params.pageSize) qs.append('pageSize', params.pageSize);
+
+    const query = qs.toString();
+    return apiClient.get(`/payments/history${query ? `?${query}` : ''}`);
+  },
+};

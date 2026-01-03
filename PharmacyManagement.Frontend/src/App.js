@@ -8,6 +8,7 @@ import MedicinesPage from './pages/MedicinesPage';
 import CustomersPage from './pages/CustomersPage';
 import OrdersPage from './pages/OrdersPage';
 import ReportsPage from './pages/ReportsPage';
+import PaymentHistoryPage from './pages/PaymentHistoryPage';
 import LoginPage from './pages/LoginPage';
 import useStore from './store';
 import './App.css';
@@ -76,7 +77,21 @@ function App() {
             }
           />
 
+          
+
           <Route
+            path="/payments"
+            element={
+              user ? (
+                <Layout>
+                  <PaymentHistoryPage />
+                </Layout>
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+<Route
             path="/reports"
             element={
               user ? (

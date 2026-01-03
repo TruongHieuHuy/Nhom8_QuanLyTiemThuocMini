@@ -9,6 +9,7 @@ using PharmacyManagement.Data;
 using PharmacyManagement.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using System;
 using System.Text;
 
 namespace PharmacyManagement.Backend
@@ -38,7 +39,8 @@ namespace PharmacyManagement.Backend
             // --- ORDER + PAYMENT ---
             services.AddScoped<IOrderService, OrderService>();
             services.AddSingleton<IVnPayService, VnPayService>();
-            
+
+
             // --- C. CẤU HÌNH CORS (Cho phép React truy cập) ---
             services.AddCors(options =>
             {
@@ -91,6 +93,42 @@ namespace PharmacyManagement.Backend
         {
             // CORS phải đặt lên đầu
             app.UseCors("AllowReactApp");
+
+            // Auto-create PaymentTransactions table if it doesn't exist (for older databases without migrations)
+            using (var scope = app.ApplicationServices.CreateScope())
+            {
+                try
+                {
+                    var db = scope.ServiceProvider.GetRequiredService<PharmacyContext>();
+                    db.Database.ExecuteSqlRaw(@"
+IF OBJECT_ID(N'[dbo].[PaymentTransactions]', N'U') IS NULL
+BEGIN
+    CREATE TABLE [dbo].[PaymentTransactions](
+        [Id] INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+        [OrderId] INT NOT NULL,
+        [OrderCode] NVARCHAR(MAX) NULL,
+        [Provider] NVARCHAR(MAX) NULL,
+        [PaymentMethod] NVARCHAR(MAX) NULL,
+        [Amount] DECIMAL(18,2) NOT NULL,
+        [Currency] NVARCHAR(10) NULL,
+        [Status] NVARCHAR(50) NULL,
+        [TxnRef] NVARCHAR(MAX) NULL,
+        [TransactionNo] NVARCHAR(MAX) NULL,
+        [ResponseCode] NVARCHAR(MAX) NULL,
+        [BankCode] NVARCHAR(MAX) NULL,
+        [PayDate] NVARCHAR(MAX) NULL,
+        [RawData] NVARCHAR(MAX) NULL,
+        [CreatedAt] DATETIME2 NOT NULL,
+        [UpdatedAt] DATETIME2 NULL
+    );
+END
+");
+                }
+                catch
+                {
+                    // ignore (e.g., database not reachable at startup)
+                }
+            }
 
             if (env.IsDevelopment())
             {

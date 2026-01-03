@@ -51,6 +51,11 @@ export default function MainLayout({ children }) {
       label: 'Quản lý đơn hàng',
     },
     {
+      key: '/payments',
+      icon: <FileTextOutlined />,
+      label: 'Lịch sử thanh toán',
+    },
+    {
       key: '/reports',
       icon: <BarChartOutlined />,
       label: 'Báo cáo & thống kê',
