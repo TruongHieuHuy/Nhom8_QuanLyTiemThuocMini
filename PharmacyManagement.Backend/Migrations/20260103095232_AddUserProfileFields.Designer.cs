@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PharmacyManagement.Data;
 
@@ -11,9 +12,11 @@ using PharmacyManagement.Data;
 namespace PharmacyManagement.Backend.Migrations
 {
     [DbContext(typeof(PharmacyContext))]
-    partial class PharmacyContextModelSnapshot : ModelSnapshot
+    [Migration("20260103095232_AddUserProfileFields")]
+    partial class AddUserProfileFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -80,13 +83,13 @@ namespace PharmacyManagement.Backend.Migrations
                             Id = 1,
                             Address = "HCM",
                             City = "HCM",
-                            CreatedDate = new DateTime(2026, 1, 3, 17, 21, 7, 608, DateTimeKind.Local).AddTicks(1300),
+                            CreatedDate = new DateTime(2026, 1, 3, 16, 52, 31, 783, DateTimeKind.Local).AddTicks(6378),
                             DateOfBirth = new DateTime(1990, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             District = "Q1",
                             Email = "binh@gmail.com",
                             Gender = "Nam",
                             IsActive = true,
-                            LastModifiedDate = new DateTime(2026, 1, 3, 17, 21, 7, 608, DateTimeKind.Local).AddTicks(1300),
+                            LastModifiedDate = new DateTime(2026, 1, 3, 16, 52, 31, 783, DateTimeKind.Local).AddTicks(6378),
                             Name = "Nguyễn Văn Bình",
                             PhoneNumber = "0987654321",
                             TotalSpending = 500000m,
@@ -97,13 +100,13 @@ namespace PharmacyManagement.Backend.Migrations
                             Id = 2,
                             Address = "HN",
                             City = "HN",
-                            CreatedDate = new DateTime(2026, 1, 3, 17, 21, 7, 608, DateTimeKind.Local).AddTicks(1300),
+                            CreatedDate = new DateTime(2026, 1, 3, 16, 52, 31, 783, DateTimeKind.Local).AddTicks(6378),
                             DateOfBirth = new DateTime(1995, 5, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             District = "HK",
                             Email = "hoa@gmail.com",
                             Gender = "Nu",
                             IsActive = true,
-                            LastModifiedDate = new DateTime(2026, 1, 3, 17, 21, 7, 608, DateTimeKind.Local).AddTicks(1300),
+                            LastModifiedDate = new DateTime(2026, 1, 3, 16, 52, 31, 783, DateTimeKind.Local).AddTicks(6378),
                             Name = "Trần Thị Hoa",
                             PhoneNumber = "0978123456",
                             TotalSpending = 350000m,
@@ -118,9 +121,6 @@ namespace PharmacyManagement.Backend.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AvatarUrl")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -166,15 +166,15 @@ namespace PharmacyManagement.Backend.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedDate = new DateTime(2026, 1, 3, 17, 21, 7, 608, DateTimeKind.Local).AddTicks(1300),
+                            CreatedDate = new DateTime(2026, 1, 3, 16, 52, 31, 783, DateTimeKind.Local).AddTicks(6378),
                             Department = "Bán hàng",
                             Email = "nhanvien@example.com",
                             FullName = "Nhân Viên Bán Hàng",
-                            LastModifiedDate = new DateTime(2026, 1, 3, 17, 21, 7, 608, DateTimeKind.Local).AddTicks(1300),
+                            LastModifiedDate = new DateTime(2026, 1, 3, 16, 52, 31, 783, DateTimeKind.Local).AddTicks(6378),
                             PhoneNumber = "0123456789",
                             Position = "Nhân Viên",
                             Salary = 10000000m,
-                            StartDate = new DateTime(2026, 1, 3, 17, 21, 7, 608, DateTimeKind.Local).AddTicks(1300),
+                            StartDate = new DateTime(2026, 1, 3, 16, 52, 31, 783, DateTimeKind.Local).AddTicks(6378),
                             Status = "Active",
                             UserAccountId = 2
                         });
@@ -284,13 +284,13 @@ namespace PharmacyManagement.Backend.Migrations
                         {
                             Id = 1,
                             Barcode = "8935206000012",
-                            CreatedDate = new DateTime(2026, 1, 3, 17, 21, 7, 608, DateTimeKind.Local).AddTicks(1300),
+                            CreatedDate = new DateTime(2026, 1, 3, 16, 52, 31, 783, DateTimeKind.Local).AddTicks(6378),
                             CurrentStock = 200,
                             Description = "Thuốc hạ sốt",
                             Dosage = "1 viên/lần",
-                            ExpiryDate = new DateTime(2028, 1, 3, 17, 21, 7, 608, DateTimeKind.Local).AddTicks(1300),
+                            ExpiryDate = new DateTime(2028, 1, 3, 16, 52, 31, 783, DateTimeKind.Local).AddTicks(6378),
                             IsActive = true,
-                            LastModifiedDate = new DateTime(2026, 1, 3, 17, 21, 7, 608, DateTimeKind.Local).AddTicks(1300),
+                            LastModifiedDate = new DateTime(2026, 1, 3, 16, 52, 31, 783, DateTimeKind.Local).AddTicks(6378),
                             Manufacturer = "DHG Pharma",
                             MedicineGroupId = 3,
                             MinStockLevel = 20,
@@ -303,13 +303,13 @@ namespace PharmacyManagement.Backend.Migrations
                         {
                             Id = 2,
                             Barcode = "8935206000029",
-                            CreatedDate = new DateTime(2026, 1, 3, 17, 21, 7, 608, DateTimeKind.Local).AddTicks(1300),
+                            CreatedDate = new DateTime(2026, 1, 3, 16, 52, 31, 783, DateTimeKind.Local).AddTicks(6378),
                             CurrentStock = 150,
                             Description = "Kháng sinh",
                             Dosage = "1 viên/lần",
-                            ExpiryDate = new DateTime(2028, 1, 3, 17, 21, 7, 608, DateTimeKind.Local).AddTicks(1300),
+                            ExpiryDate = new DateTime(2028, 1, 3, 16, 52, 31, 783, DateTimeKind.Local).AddTicks(6378),
                             IsActive = true,
-                            LastModifiedDate = new DateTime(2026, 1, 3, 17, 21, 7, 608, DateTimeKind.Local).AddTicks(1300),
+                            LastModifiedDate = new DateTime(2026, 1, 3, 16, 52, 31, 783, DateTimeKind.Local).AddTicks(6378),
                             Manufacturer = "Stada",
                             MedicineGroupId = 1,
                             MinStockLevel = 15,
@@ -322,13 +322,13 @@ namespace PharmacyManagement.Backend.Migrations
                         {
                             Id = 3,
                             Barcode = "8935206000036",
-                            CreatedDate = new DateTime(2026, 1, 3, 17, 21, 7, 608, DateTimeKind.Local).AddTicks(1300),
+                            CreatedDate = new DateTime(2026, 1, 3, 16, 52, 31, 783, DateTimeKind.Local).AddTicks(6378),
                             CurrentStock = 300,
                             Description = "Tăng đề kháng",
                             Dosage = "1 viên/ngày",
-                            ExpiryDate = new DateTime(2028, 1, 3, 17, 21, 7, 608, DateTimeKind.Local).AddTicks(1300),
+                            ExpiryDate = new DateTime(2028, 1, 3, 16, 52, 31, 783, DateTimeKind.Local).AddTicks(6378),
                             IsActive = true,
-                            LastModifiedDate = new DateTime(2026, 1, 3, 17, 21, 7, 608, DateTimeKind.Local).AddTicks(1300),
+                            LastModifiedDate = new DateTime(2026, 1, 3, 16, 52, 31, 783, DateTimeKind.Local).AddTicks(6378),
                             Manufacturer = "Traphaco",
                             MedicineGroupId = 4,
                             MinStockLevel = 30,
@@ -341,13 +341,13 @@ namespace PharmacyManagement.Backend.Migrations
                         {
                             Id = 4,
                             Barcode = "8935206000043",
-                            CreatedDate = new DateTime(2026, 1, 3, 17, 21, 7, 608, DateTimeKind.Local).AddTicks(1300),
+                            CreatedDate = new DateTime(2026, 1, 3, 16, 52, 31, 783, DateTimeKind.Local).AddTicks(6378),
                             CurrentStock = 100,
                             Description = "Trị tiêu chảy",
                             Dosage = "1 gói/lần",
-                            ExpiryDate = new DateTime(2028, 1, 3, 17, 21, 7, 608, DateTimeKind.Local).AddTicks(1300),
+                            ExpiryDate = new DateTime(2028, 1, 3, 16, 52, 31, 783, DateTimeKind.Local).AddTicks(6378),
                             IsActive = true,
-                            LastModifiedDate = new DateTime(2026, 1, 3, 17, 21, 7, 608, DateTimeKind.Local).AddTicks(1300),
+                            LastModifiedDate = new DateTime(2026, 1, 3, 16, 52, 31, 783, DateTimeKind.Local).AddTicks(6378),
                             Manufacturer = "Ipsen",
                             MedicineGroupId = 5,
                             MinStockLevel = 10,
@@ -360,13 +360,13 @@ namespace PharmacyManagement.Backend.Migrations
                         {
                             Id = 5,
                             Barcode = "8935206000050",
-                            CreatedDate = new DateTime(2026, 1, 3, 17, 21, 7, 608, DateTimeKind.Local).AddTicks(1300),
+                            CreatedDate = new DateTime(2026, 1, 3, 16, 52, 31, 783, DateTimeKind.Local).AddTicks(6378),
                             CurrentStock = 120,
                             Description = "Giảm đau",
                             Dosage = "1 viên/lần",
-                            ExpiryDate = new DateTime(2028, 1, 3, 17, 21, 7, 608, DateTimeKind.Local).AddTicks(1300),
+                            ExpiryDate = new DateTime(2028, 1, 3, 16, 52, 31, 783, DateTimeKind.Local).AddTicks(6378),
                             IsActive = true,
-                            LastModifiedDate = new DateTime(2026, 1, 3, 17, 21, 7, 608, DateTimeKind.Local).AddTicks(1300),
+                            LastModifiedDate = new DateTime(2026, 1, 3, 16, 52, 31, 783, DateTimeKind.Local).AddTicks(6378),
                             Manufacturer = "Sanofi",
                             MedicineGroupId = 2,
                             MinStockLevel = 12,
@@ -556,13 +556,13 @@ namespace PharmacyManagement.Backend.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedDate = new DateTime(2026, 1, 2, 17, 21, 7, 608, DateTimeKind.Local).AddTicks(1300),
+                            CreatedDate = new DateTime(2026, 1, 2, 16, 52, 31, 783, DateTimeKind.Local).AddTicks(6378),
                             CustomerId = 1,
                             Discount = 0m,
                             EmployeeId = 1,
                             Notes = "Khách quen",
                             OrderCode = "HD001",
-                            OrderDate = new DateTime(2026, 1, 2, 17, 21, 7, 608, DateTimeKind.Local).AddTicks(1300),
+                            OrderDate = new DateTime(2026, 1, 2, 16, 52, 31, 783, DateTimeKind.Local).AddTicks(6378),
                             OrderStatus = "Completed",
                             PaymentMethod = "Cash",
                             SubTotal = 150000m,
@@ -572,13 +572,13 @@ namespace PharmacyManagement.Backend.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedDate = new DateTime(2026, 1, 3, 17, 21, 7, 608, DateTimeKind.Local).AddTicks(1300),
+                            CreatedDate = new DateTime(2026, 1, 3, 16, 52, 31, 783, DateTimeKind.Local).AddTicks(6378),
                             CustomerId = 2,
                             Discount = 20000m,
                             EmployeeId = 1,
                             Notes = "",
                             OrderCode = "HD002",
-                            OrderDate = new DateTime(2026, 1, 3, 17, 21, 7, 608, DateTimeKind.Local).AddTicks(1300),
+                            OrderDate = new DateTime(2026, 1, 3, 16, 52, 31, 783, DateTimeKind.Local).AddTicks(6378),
                             OrderStatus = "Completed",
                             PaymentMethod = "Card",
                             SubTotal = 200000m,
@@ -863,7 +863,7 @@ namespace PharmacyManagement.Backend.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedDate = new DateTime(2026, 1, 3, 17, 21, 7, 608, DateTimeKind.Local).AddTicks(1300),
+                            CreatedDate = new DateTime(2026, 1, 3, 16, 52, 31, 783, DateTimeKind.Local).AddTicks(6378),
                             Email = "admin@example.com",
                             IsActive = true,
                             PasswordAccount = "123",
@@ -873,7 +873,7 @@ namespace PharmacyManagement.Backend.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedDate = new DateTime(2026, 1, 3, 17, 21, 7, 608, DateTimeKind.Local).AddTicks(1300),
+                            CreatedDate = new DateTime(2026, 1, 3, 16, 52, 31, 783, DateTimeKind.Local).AddTicks(6378),
                             Email = "nhanvien@example.com",
                             IsActive = true,
                             PasswordAccount = "123",

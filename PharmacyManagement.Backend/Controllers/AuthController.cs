@@ -41,6 +41,10 @@ namespace PharmacyManagement.Controllers
             if (!user.IsActive)
                 return Unauthorized(new { message = "Tài khoản đã bị khóa!" });
 
+            // 2. Lấy thông tin nhân viên để get fullName và avatar
+            var employee = await _context.Employees
+                .FirstOrDefaultAsync(e => e.UserAccountId == user.Id);
+
             // 2. Cập nhật lần đăng nhập cuối
             user.LastLoginDate = DateTime.Now;
             await _context.SaveChangesAsync();
@@ -56,15 +60,20 @@ namespace PharmacyManagement.Controllers
                     id = user.Id,
                     username = user.Username,
                     role = user.Role,
-                    fullName = user.Username 
+                    fullName = string.IsNullOrEmpty(user.FullName) ? (employee?.FullName ?? user.Username) : user.FullName,
+                    email = user.Email ?? employee?.Email,
+                    phoneNumber = user.PhoneNumber ?? employee?.PhoneNumber,
+                    position = employee?.Position,
+                    department = employee?.Department,
+                    avatarUrl = user.AvatarUrl ?? employee?.AvatarUrl
                 }
             });
         }
 
         private string GenerateJwtToken(UserAccount user)
         {
-            var jwtSettings = _configuration.GetSection("JwtSettings");
-            var secretKey = jwtSettings["SecretKey"];
+            var jwtSettings = _configuration.GetSection("Jwt");
+            var secretKey = jwtSettings["Key"];
             
             // Key dự phòng nếu chưa cấu hình
             if (string.IsNullOrEmpty(secretKey)) secretKey = "DayLaKhoaBiMatMacDinhChoDuAnNay_KhongNenDeLoRaNgoai";

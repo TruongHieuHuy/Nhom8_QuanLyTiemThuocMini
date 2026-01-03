@@ -24,22 +24,27 @@ export default function LoginPage() {
       });
 
       // 2. Xử lý dữ liệu trả về
-      const { token, role, username } = response.data;
+      const { token, user } = response.data;
 
       const userData = {
-        fullName: username,
-        role: role
+        id: user.id,
+        username: user.username,
+        fullName: user.fullName || user.username,
+        email: user.email,
+        phoneNumber: user.phoneNumber,
+        avatarUrl: user.avatarUrl,
+        role: user.role
       };
 
       // 3. Lưu vào Local Storage
       localStorage.setItem('token', token);
-      localStorage.setItem('role', role);
+      localStorage.setItem('role', user.role);
       localStorage.setItem('user', JSON.stringify(userData));
 
       // 4. Cập nhật State
       setUser(userData);
       
-      message.success(`Xin chào ${role}: ${username}`);
+      message.success(`Xin chào ${userData.fullName}`);
       
       // 5. Chuyển trang
       window.location.href = '/dashboard';

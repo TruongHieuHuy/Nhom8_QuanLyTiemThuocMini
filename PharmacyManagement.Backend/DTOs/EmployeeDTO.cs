@@ -13,6 +13,7 @@ namespace PharmacyManagement.DTOs
         public DateTime StartDate { get; set; }
         public decimal Salary { get; set; }
         public string Status { get; set; }
+        public string AvatarUrl { get; set; }
     }
 
     public class CreateEmployeeDTO
@@ -24,6 +25,7 @@ namespace PharmacyManagement.DTOs
         public string Department { get; set; }
         public DateTime StartDate { get; set; }
         public decimal Salary { get; set; }
+        public string AvatarUrl { get; set; }
     }
 
     public class UpdateEmployeeDTO
@@ -36,5 +38,6 @@ namespace PharmacyManagement.DTOs
         public string Department { get; set; }
         public decimal Salary { get; set; }
         public string Status { get; set; }
+        public string AvatarUrl { get; set; }
     }
 }

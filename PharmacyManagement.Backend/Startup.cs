@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Text;
+using System;
+using System.IO;
 
 namespace PharmacyManagement.Backend
 {
@@ -47,7 +49,7 @@ namespace PharmacyManagement.Backend
                 options.AddPolicy("AllowReactApp",
                     builder =>
                     {
-                        builder.WithOrigins("http://localhost:3000") // Chỉ định rõ cổng React
+                        builder.WithOrigins("http://localhost:3000", "http://localhost:3001") // Cho phép cả port 3000 và 3001
                                .AllowAnyMethod()
                                .AllowAnyHeader()
                                .AllowCredentials();
@@ -55,8 +57,8 @@ namespace PharmacyManagement.Backend
             });
 
             // --- D. CẤU HÌNH JWT (ĐỂ ĐĂNG NHẬP ĐƯỢC) ---
-            var jwtSettings = Configuration.GetSection("JwtSettings");
-            var secretKey = jwtSettings["SecretKey"];
+            var jwtSettings = Configuration.GetSection("Jwt");
+            var secretKey = jwtSettings["Key"];
             if (!string.IsNullOrEmpty(secretKey))
             {
                 services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -77,6 +79,14 @@ namespace PharmacyManagement.Backend
 
             // Controllers & Swagger
             services.AddControllers();
+            
+            // Configure FormOptions for file uploads
+            services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(options =>
+            {
+                options.ValueLengthLimit = int.MaxValue;
+                options.MultipartBodyLengthLimit = long.MaxValue; // 2GB
+            });
+            
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
@@ -139,6 +149,17 @@ END
 
             // --- QUAN TRỌNG: TẮT DÒNG NÀY ĐỂ TRÁNH LỖI NETWORK ERROR ---
             // app.UseHttpsRedirection(); 
+
+            // --- CẤU HÌNH STATIC FILES (CHO UPLOAD AVATARS) ---
+            app.UseStaticFiles();
+            
+            // Cấu hình để serve thư mục uploads
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), "uploads")),
+                RequestPath = "/uploads"
+            });
 
             app.UseRouting();
 
