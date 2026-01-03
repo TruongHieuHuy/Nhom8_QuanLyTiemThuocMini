@@ -88,6 +88,33 @@ namespace PharmacyManagement.Services
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
 
+            var pm = (order.PaymentMethod ?? "").Trim();
+
+            if (!pm.Equals("VNPay", StringComparison.OrdinalIgnoreCase)
+                && order.OrderStatus == "Completed")
+            {
+                var tx = new PaymentTransaction
+                {
+                    OrderId = order.Id,
+                    OrderCode = order.OrderCode,
+
+                    Provider = pm,          // "Cash" hoặc "Banking"
+
+                    Amount = order.Total,
+                    Status = "Success",
+
+                    ResponseCode = "00",
+                    TransactionNo = null,
+                    BankCode = null,
+
+                    // ✅ PayDate đang là string => convert DateTime -> string
+                    PayDate = now.ToString("yyyyMMddHHmmss") // hoặc "O" nếu bạn thích ISO
+                };
+
+                _context.PaymentTransactions.Add(tx);
+                await _context.SaveChangesAsync();
+            }
+
             return new CreateOrderResultDTO
             {
                 OrderId = order.Id,
