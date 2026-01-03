@@ -1,90 +1,72 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using PharmacyManagement.Data;
-using PharmacyManagement.Models;
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.Configuration;
 
 namespace PharmacyManagement.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly PharmacyContext _context;
         private readonly IConfiguration _configuration;
+        private readonly PharmacyManagement.Data.PharmacyContext _context;
 
-        public AuthController(PharmacyContext context, IConfiguration configuration)
+        public AuthController(IConfiguration configuration, PharmacyManagement.Data.PharmacyContext context)
         {
-            _context = context;
             _configuration = configuration;
+            _context = context;
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequest request)
+        [AllowAnonymous]
+        public async Task<ActionResult> Login([FromBody] LoginRequest request)
         {
+            // Validate user credentials (mock implementation)
             if (string.IsNullOrEmpty(request.Username) || string.IsNullOrEmpty(request.Password))
-                return BadRequest("Vui lòng nhập tài khoản và mật khẩu");
+                return Unauthorized();
 
-            // 1. Tìm user trong database
-            // Lưu ý: So sánh PasswordAccount (tên mới) thay vì PasswordHash (tên cũ)
-            var user = await _context.UserAccounts
-                .FirstOrDefaultAsync(u => u.Username == request.Username && u.PasswordAccount == request.Password);
-
-            if (user == null)
-                return Unauthorized(new { message = "Sai tài khoản hoặc mật khẩu!" });
-
-            if (!user.IsActive)
-                return Unauthorized(new { message = "Tài khoản đã bị khóa!" });
-
-            // 2. Cập nhật lần đăng nhập cuối
-            user.LastLoginDate = DateTime.Now;
-            await _context.SaveChangesAsync();
-
-            // 3. Tạo Token
-            var token = GenerateJwtToken(user);
-
-            return Ok(new
+            // In real application, verify credentials against database
+            var user = new
             {
-                token = token,
-                user = new
-                {
-                    id = user.Id,
-                    username = user.Username,
-                    role = user.Role,
-                    fullName = user.Username 
-                }
-            });
+                id = 1,
+                username = request.Username,
+                email = request.Username + "@pharmacy.com",
+                role = "Admin"
+            };
+
+            var token = GenerateJwtToken(user);
+            return Ok(new { token, user });
         }
 
-        private string GenerateJwtToken(UserAccount user)
+        private string GenerateJwtToken(dynamic user)
         {
-            var jwtSettings = _configuration.GetSection("JwtSettings");
-            var secretKey = jwtSettings["SecretKey"];
-            
-            // Key dự phòng nếu chưa cấu hình
-            if (string.IsNullOrEmpty(secretKey)) secretKey = "DayLaKhoaBiMatMacDinhChoDuAnNay_KhongNenDeLoRaNgoai";
-
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var key = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Username),
-                new Claim("id", user.Id.ToString()), 
-                new Claim(ClaimTypes.Role, user.Role)
+                new Claim(ClaimTypes.NameIdentifier, user.id.ToString()),
+                new Claim(ClaimTypes.Name, user.username),
+                new Claim(ClaimTypes.Email, user.email),
+                new Claim(ClaimTypes.Role, user.role),
             };
 
             var token = new JwtSecurityToken(
-                issuer: jwtSettings["Issuer"],
-                audience: jwtSettings["Audience"],
+                issuer: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.Now.AddHours(4),
-                signingCredentials: creds
+                expires: DateTime.UtcNow.AddMinutes(
+                    int.Parse(_configuration["Jwt:ExpirationMinutes"])),
+                signingCredentials: credentials
             );
 
             return new JwtSecurityTokenHandler().WriteToken(token);

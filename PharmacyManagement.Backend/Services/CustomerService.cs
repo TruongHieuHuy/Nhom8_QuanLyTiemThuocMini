@@ -1,8 +1,5 @@
-using Microsoft.EntityFrameworkCore;
 using PharmacyManagement.DTOs;
 using PharmacyManagement.Models;
-using PharmacyManagement.Data;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,62 +10,77 @@ namespace PharmacyManagement.Services
     {
         Task<IEnumerable<CustomerDTO>> GetAllCustomersAsync();
         Task<CustomerDTO> GetCustomerByIdAsync(int id);
+        Task<CustomerDetailDTO> GetCustomerDetailAsync(int id);
+        Task<IEnumerable<CustomerDTO>> SearchCustomersAsync(string searchTerm);
         Task<CustomerDTO> CreateCustomerAsync(CreateCustomerDTO createDto);
-        Task<bool> UpdateCustomerAsync(int id, CreateCustomerDTO updateDto);
+        Task<CustomerDTO> UpdateCustomerAsync(UpdateCustomerDTO updateDto);
         Task<bool> DeleteCustomerAsync(int id);
     }
 
     public class CustomerService : ICustomerService
     {
-        private readonly PharmacyContext _context;
+        private readonly PharmacyManagement.Data.PharmacyContext _context;
 
-        public CustomerService(PharmacyContext context)
+        public CustomerService(PharmacyManagement.Data.PharmacyContext context)
         {
             _context = context;
         }
 
         public async Task<IEnumerable<CustomerDTO>> GetAllCustomersAsync()
         {
-            var customers = await _context.Customers
-                .Where(c => c.IsActive)
-                .OrderByDescending(c => c.CreatedDate)
-                .ToListAsync();
-
-            return customers.Select(c => new CustomerDTO
-            {
-                Id = c.Id,
-                Name = c.Name,
-                PhoneNumber = c.PhoneNumber,
-                Email = c.Email,
-                Address = c.Address,
-                City = c.City,
-                District = c.District,
-                Ward = c.Ward,
-                DateOfBirth = c.DateOfBirth,
-                Gender = c.Gender,
-                TotalSpending = c.TotalSpending
-            });
+            var customers = await System.Threading.Tasks.Task.Run(() =>
+                _context.Customers.Where(c => c.IsActive).ToList()
+            );
+            return customers.Select(c => MapToDTO(c)).ToList();
         }
 
         public async Task<CustomerDTO> GetCustomerByIdAsync(int id)
         {
-            var c = await _context.Customers.FindAsync(id);
-            if (c == null || !c.IsActive) return null;
+            var customer = await System.Threading.Tasks.Task.Run(() =>
+                _context.Customers.FirstOrDefault(c => c.Id == id)
+            );
+            return customer != null ? MapToDTO(customer) : null;
+        }
 
-            return new CustomerDTO
+        public async Task<CustomerDetailDTO> GetCustomerDetailAsync(int id)
+        {
+            var customer = await System.Threading.Tasks.Task.Run(() =>
+                _context.Customers
+                    .FirstOrDefault(c => c.Id == id)
+            );
+
+            if (customer == null)
+                return null;
+
+            return new CustomerDetailDTO
             {
-                Id = c.Id,
-                Name = c.Name,
-                PhoneNumber = c.PhoneNumber,
-                Email = c.Email,
-                Address = c.Address,
-                City = c.City,
-                District = c.District,
-                Ward = c.Ward,
-                DateOfBirth = c.DateOfBirth,
-                Gender = c.Gender,
-                TotalSpending = c.TotalSpending
+                Id = customer.Id,
+                Name = customer.Name,
+                PhoneNumber = customer.PhoneNumber,
+                Email = customer.Email,
+                FullAddress = $"{customer.Ward}, {customer.District}, {customer.City}",
+                TotalSpending = customer.TotalSpending,
+                Orders = customer.Orders?.Select(o => new OrderDTO
+                {
+                    Id = o.Id,
+                    OrderCode = o.OrderCode,
+                    OrderDate = o.OrderDate,
+                    Total = o.Total,
+                    OrderStatus = o.OrderStatus
+                }).ToList()
             };
+        }
+
+        public async Task<IEnumerable<CustomerDTO>> SearchCustomersAsync(string searchTerm)
+        {
+            var customers = await System.Threading.Tasks.Task.Run(() =>
+                _context.Customers.Where(c => c.IsActive && (
+                    c.Name.Contains(searchTerm) ||
+                    c.PhoneNumber.Contains(searchTerm) ||
+                    c.Email.Contains(searchTerm)
+                )).ToList()
+            );
+            return customers.Select(c => MapToDTO(c)).ToList();
         }
 
         public async Task<CustomerDTO> CreateCustomerAsync(CreateCustomerDTO createDto)
@@ -85,14 +97,58 @@ namespace PharmacyManagement.Services
                 DateOfBirth = createDto.DateOfBirth,
                 Gender = createDto.Gender,
                 TotalSpending = 0,
-                CreatedDate = DateTime.Now,
-                LastModifiedDate = DateTime.Now,
+                CreatedDate = System.DateTime.Now,
+                LastModifiedDate = System.DateTime.Now,
                 IsActive = true
             };
 
             _context.Customers.Add(customer);
             await _context.SaveChangesAsync();
+            return MapToDTO(customer);
+        }
 
+        public async Task<CustomerDTO> UpdateCustomerAsync(UpdateCustomerDTO updateDto)
+        {
+            var customer = await System.Threading.Tasks.Task.Run(() =>
+                _context.Customers.FirstOrDefault(c => c.Id == updateDto.Id)
+            );
+
+            if (customer == null)
+                return null;
+
+            customer.Name = updateDto.Name;
+            customer.PhoneNumber = updateDto.PhoneNumber;
+            customer.Email = updateDto.Email;
+            customer.Address = updateDto.Address;
+            customer.City = updateDto.City;
+            customer.District = updateDto.District;
+            customer.Ward = updateDto.Ward;
+            customer.DateOfBirth = updateDto.DateOfBirth;
+            customer.Gender = updateDto.Gender;
+            customer.LastModifiedDate = System.DateTime.Now;
+
+            _context.Customers.Update(customer);
+            await _context.SaveChangesAsync();
+            return MapToDTO(customer);
+        }
+
+        public async Task<bool> DeleteCustomerAsync(int id)
+        {
+            var customer = await System.Threading.Tasks.Task.Run(() =>
+                _context.Customers.FirstOrDefault(c => c.Id == id)
+            );
+
+            if (customer == null)
+                return false;
+
+            customer.IsActive = false;
+            _context.Customers.Update(customer);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        private CustomerDTO MapToDTO(Customer customer)
+        {
             return new CustomerDTO
             {
                 Id = customer.Id,
@@ -105,38 +161,9 @@ namespace PharmacyManagement.Services
                 Ward = customer.Ward,
                 DateOfBirth = customer.DateOfBirth,
                 Gender = customer.Gender,
-                TotalSpending = customer.TotalSpending
+                TotalSpending = customer.TotalSpending,
+                IsActive = customer.IsActive
             };
-        }
-
-        public async Task<bool> UpdateCustomerAsync(int id, CreateCustomerDTO updateDto)
-        {
-            var customer = await _context.Customers.FindAsync(id);
-            if (customer == null || !customer.IsActive) return false;
-
-            customer.Name = updateDto.Name;
-            customer.PhoneNumber = updateDto.PhoneNumber;
-            customer.Email = updateDto.Email;
-            customer.Address = updateDto.Address;
-            customer.City = updateDto.City;
-            customer.District = updateDto.District;
-            customer.Ward = updateDto.Ward;
-            customer.DateOfBirth = updateDto.DateOfBirth;
-            customer.Gender = updateDto.Gender;
-            customer.LastModifiedDate = DateTime.Now;
-
-            await _context.SaveChangesAsync();
-            return true;
-        }
-
-        public async Task<bool> DeleteCustomerAsync(int id)
-        {
-            var customer = await _context.Customers.FindAsync(id);
-            if (customer == null) return false;
-
-            customer.IsActive = false; // Xóa mềm
-            await _context.SaveChangesAsync();
-            return true;
         }
     }
 }

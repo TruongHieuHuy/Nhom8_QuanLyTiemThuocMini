@@ -1,13 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using PharmacyManagement.DTOs;
 using PharmacyManagement.Services;
-using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace PharmacyManagement.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class CustomersController : ControllerBase
     {
         private readonly ICustomerService _customerService;
@@ -17,7 +17,6 @@ namespace PharmacyManagement.Controllers
             _customerService = customerService;
         }
 
-        // GET: api/Customers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CustomerDTO>>> GetAll()
         {
@@ -25,55 +24,59 @@ namespace PharmacyManagement.Controllers
             return Ok(customers);
         }
 
-        // GET: api/Customers/5
         [HttpGet("{id}")]
         public async Task<ActionResult<CustomerDTO>> GetById(int id)
         {
             var customer = await _customerService.GetCustomerByIdAsync(id);
             if (customer == null)
-            {
-                return NotFound(new { message = "Không tìm thấy khách hàng" });
-            }
-            // SỬA: Trả về CustomerDTO thay vì CustomerDetailDTO
+                return NotFound();
             return Ok(customer);
         }
 
-        // POST: api/Customers
+        [HttpGet("detail/{id}")]
+        public async Task<ActionResult<CustomerDetailDTO>> GetDetail(int id)
+        {
+            var customer = await _customerService.GetCustomerDetailAsync(id);
+            if (customer == null)
+                return NotFound();
+            return Ok(customer);
+        }
+
+        [HttpGet("search/{searchTerm}")]
+        public async Task<ActionResult<IEnumerable<CustomerDTO>>> Search(string searchTerm)
+        {
+            var customers = await _customerService.SearchCustomersAsync(searchTerm);
+            return Ok(customers);
+        }
+
         [HttpPost]
         public async Task<ActionResult<CustomerDTO>> Create([FromBody] CreateCustomerDTO createDto)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            var newCustomer = await _customerService.CreateCustomerAsync(createDto);
-            return CreatedAtAction(nameof(GetById), new { id = newCustomer.Id }, newCustomer);
+            var customer = await _customerService.CreateCustomerAsync(createDto);
+            return CreatedAtAction(nameof(GetById), new { id = customer.Id }, customer);
         }
 
-        // PUT: api/Customers/5
-        [HttpPut("{id}")]
-        // SỬA: Dùng CreateCustomerDTO cho việc cập nhật (Update) luôn
-        public async Task<IActionResult> Update(int id, [FromBody] CreateCustomerDTO updateDto)
+        [HttpPut]
+        public async Task<ActionResult<CustomerDTO>> Update([FromBody] UpdateCustomerDTO updateDto)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            var result = await _customerService.UpdateCustomerAsync(id, updateDto);
-            if (!result)
-            {
-                return NotFound(new { message = "Không tìm thấy khách hàng để cập nhật" });
-            }
-
-            return NoContent();
+            var customer = await _customerService.UpdateCustomerAsync(updateDto);
+            if (customer == null)
+                return NotFound();
+            return Ok(customer);
         }
 
-        // DELETE: api/Customers/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
             var result = await _customerService.DeleteCustomerAsync(id);
             if (!result)
-            {
-                return NotFound(new { message = "Không tìm thấy khách hàng để xóa" });
-            }
-
+                return NotFound();
             return NoContent();
         }
     }

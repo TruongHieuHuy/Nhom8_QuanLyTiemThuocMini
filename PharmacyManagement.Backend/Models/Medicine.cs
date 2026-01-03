@@ -23,7 +23,7 @@ namespace PharmacyManagement.Models
         public DateTime LastModifiedDate { get; set; }
         public bool IsActive { get; set; }
 
-       
+        public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
         public virtual ICollection<InventoryHistory> InventoryHistories { get; set; } = new List<InventoryHistory>();
     }
 }

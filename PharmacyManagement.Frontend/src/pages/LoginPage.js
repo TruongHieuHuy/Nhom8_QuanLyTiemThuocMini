@@ -1,12 +1,9 @@
+
 import React, { useState } from 'react';
 import { Form, Input, Button, Card, Row, Col, message, Checkbox } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import useStore from '../store';
-import axios from 'axios'; 
 import './LoginPage.css';
-
-// ⚠️ LƯU Ý: Thay 7198 bằng cổng Backend đang chạy của bạn
-const API_URL = 'http://localhost:5000/api/Auth/login'; 
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
@@ -16,49 +13,23 @@ export default function LoginPage() {
   const handleSubmit = async (values) => {
     try {
       setLoading(true);
-
-      // 1. GỌI API THẬT
-      const response = await axios.post(API_URL, {
-        username: values.username,
-        password: values.password
-      });
-
-      // 2. Xử lý dữ liệu trả về
-      const { token, role, username } = response.data;
-
-      const userData = {
-        fullName: username,
-        role: role
+      // Mock login - trong thực tế cần call API
+      const mockUser = {
+        id: 1,
+        fullName: values.username,
+        email: values.username + '@pharmacy.com',
+        role: 'Admin',
       };
 
-      // 3. Lưu vào Local Storage
-      localStorage.setItem('token', token);
-      localStorage.setItem('role', role);
-      localStorage.setItem('user', JSON.stringify(userData));
+      // Lưu user và token
+      localStorage.setItem('user', JSON.stringify(mockUser));
+      localStorage.setItem('token', 'mock-jwt-token');
 
-      // 4. Cập nhật State
-      setUser(userData);
-      
-      message.success(`Xin chào ${role}: ${username}`);
-      
-      // 5. Chuyển trang
+      setUser(mockUser);
+      message.success('Đăng nhập thành công');
       window.location.href = '/dashboard';
-
     } catch (err) {
-      // --- ĐOẠN CODE SỬA LỖI AN TOÀN ---
-      console.error(err);
-      
-      if (err.response && err.response.data) {
-         // Lỗi do Backend trả về (ví dụ: Sai pass, tài khoản khóa...)
-         message.error(err.response.data.message || 'Sai tài khoản hoặc mật khẩu!');
-      } else if (err.request) {
-         // Lỗi do không kết nối được (Backend chưa chạy hoặc chưa mở CORS)
-         message.error('Không thể kết nối đến Server. Hãy kiểm tra Backend đã chạy chưa?');
-      } else {
-         message.error('Lỗi đăng nhập không xác định');
-      }
-      // ----------------------------------
-
+      message.error('Lỗi khi đăng nhập');
     } finally {
       setLoading(false);
     }
@@ -82,16 +53,34 @@ export default function LoginPage() {
             >
               <Form.Item
                 name="username"
-                rules={[{ required: true, message: 'Vui lòng nhập tên đăng nhập' }]}
+                rules={[
+                  {
+                    required: true,
+                    message: 'Vui lòng nhập tên đăng nhập',
+                  },
+                ]}
               >
-                <Input prefix={<UserOutlined />} placeholder="Tên đăng nhập" size="large" />
+                <Input
+                  prefix={<UserOutlined />}
+                  placeholder="Tên đăng nhập"
+                  size="large"
+                />
               </Form.Item>
 
               <Form.Item
                 name="password"
-                rules={[{ required: true, message: 'Vui lòng nhập mật khẩu' }]}
+                rules={[
+                  {
+                    required: true,
+                    message: 'Vui lòng nhập mật khẩu',
+                  },
+                ]}
               >
-                <Input.Password prefix={<LockOutlined />} placeholder="Mật khẩu" size="large" />
+                <Input.Password
+                  prefix={<LockOutlined />}
+                  placeholder="Mật khẩu"
+                  size="large"
+                />
               </Form.Item>
 
               <Form.Item name="remember" valuePropName="checked" initialValue={true}>
@@ -99,11 +88,21 @@ export default function LoginPage() {
               </Form.Item>
 
               <Form.Item>
-                <Button type="primary" htmlType="submit" block size="large" loading={loading}>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  block
+                  size="large"
+                  loading={loading}
+                >
                   Đăng nhập
                 </Button>
               </Form.Item>
             </Form>
+
+            <div className="login-footer">
+              <p>Demo: Để trống để đăng nhập</p>
+            </div>
           </Card>
         </Col>
       </Row>

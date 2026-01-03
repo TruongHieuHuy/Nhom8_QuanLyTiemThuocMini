@@ -89,7 +89,7 @@ export default function MainLayout({ children }) {
         className="sider"
       >
         <div className="logo">
-          <h2>NHÀ THUỐC MINI</h2>
+          <h2>Pharmacy</h2>
         </div>
         <Menu
           theme="dark"
