@@ -7,6 +7,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using PharmacyManagement.Data;
 using PharmacyManagement.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace PharmacyManagement.Backend
 {
@@ -19,34 +22,59 @@ namespace PharmacyManagement.Backend
             Configuration = configuration;
         }
 
+        // 1. CẤU HÌNH DỊCH VỤ (SERVICES)
         public void ConfigureServices(IServiceCollection services)
         {
-            // Database
+            // --- A. KẾT NỐI DATABASE ---
             services.AddDbContext<PharmacyContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            // Services
+            // --- B. ĐĂNG KÝ CÁC SERVICE (Bổ sung cho đủ) ---
             services.AddScoped<IMedicineService, MedicineService>();
             services.AddScoped<ICustomerService, CustomerService>();
+            services.AddScoped<IInventoryService, InventoryService>(); // Thêm cái này
+            services.AddScoped<ISupplierService, SupplierService>();   // Thêm cái này
+
+            // --- ORDER + PAYMENT ---
             services.AddScoped<IOrderService, OrderService>();
-            services.AddScoped<IReportService, ReportService>();
-
-            // Controllers
-            services.AddControllers();
-
-            // CORS
+            services.AddSingleton<IVnPayService, VnPayService>();
+            
+            // --- C. CẤU HÌNH CORS (Cho phép React truy cập) ---
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowReactApp",
                     builder =>
                     {
-                        builder.WithOrigins("http://localhost:3000", "http://localhost:3001")
-                            .AllowAnyMethod()
-                            .AllowAnyHeader();
+                        builder.WithOrigins("http://localhost:3000") // Chỉ định rõ cổng React
+                               .AllowAnyMethod()
+                               .AllowAnyHeader()
+                               .AllowCredentials();
                     });
             });
 
-            // Swagger
+            // --- D. CẤU HÌNH JWT (ĐỂ ĐĂNG NHẬP ĐƯỢC) ---
+            var jwtSettings = Configuration.GetSection("JwtSettings");
+            var secretKey = jwtSettings["SecretKey"];
+            if (!string.IsNullOrEmpty(secretKey))
+            {
+                services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                    .AddJwtBearer(options =>
+                    {
+                        options.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            ValidateIssuer = true,
+                            ValidateAudience = true,
+                            ValidateLifetime = true,
+                            ValidateIssuerSigningKey = true,
+                            ValidIssuer = jwtSettings["Issuer"],
+                            ValidAudience = jwtSettings["Audience"],
+                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
+                        };
+                    });
+            }
+
+            // Controllers & Swagger
+            services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
@@ -58,8 +86,12 @@ namespace PharmacyManagement.Backend
             });
         }
 
+        // 2. CẤU HÌNH PIPELINE (MIDDLEWARE)
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            // CORS phải đặt lên đầu
+            app.UseCors("AllowReactApp");
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -67,12 +99,13 @@ namespace PharmacyManagement.Backend
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Pharmacy Management API v1"));
             }
 
-            app.UseHttpsRedirection();
+            // --- QUAN TRỌNG: TẮT DÒNG NÀY ĐỂ TRÁNH LỖI NETWORK ERROR ---
+            // app.UseHttpsRedirection(); 
 
             app.UseRouting();
 
-            app.UseCors("AllowReactApp");
-
+            // --- QUAN TRỌNG: PHẢI CÓ Authentication TRƯỚC Authorization ---
+            app.UseAuthentication(); // <--- Dòng này giúp Login hoạt động
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

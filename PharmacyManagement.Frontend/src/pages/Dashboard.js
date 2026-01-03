@@ -1,212 +1,121 @@
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Card, Statistic, Table, Space, Button, message } from 'antd';
-import {
-  ShoppingCartOutlined,
-  DollarOutlined,
-  UserOutlined,
-  MedicineBoxOutlined,
-  ArrowUpOutlined,
-  ArrowDownOutlined,
+import { Card, Row, Col, Statistic, Table, Tag, message } from 'antd';
+import { 
+  ShoppingCartOutlined, 
+  UserOutlined, 
+  MedicineBoxOutlined, 
+  DollarOutlined, 
+  WarningOutlined 
 } from '@ant-design/icons';
-import { orderService, reportService, medicineService, customerService } from '../services';
+import axios from 'axios';
 
 export default function Dashboard() {
   const [stats, setStats] = useState({
-    totalOrders: 0,
-    totalRevenue: 0,
+    totalMedicines: 0,
     totalCustomers: 0,
-    lowStockMedicines: 0,
+    lowStock: 0,
+    totalOrders: 0,
+    totalRevenue: 0
   });
-  const [topMedicines, setTopMedicines] = useState([]);
-  const [topCustomers, setTopCustomers] = useState([]);
-  const [recentOrders, setRecentOrders] = useState([]);
-  const [loading, setLoading] = useState(false);
+
+  const [medicines, setMedicines] = useState([]); // Để hiện bảng thuốc sắp hết
 
   useEffect(() => {
-    loadDashboardData();
+    fetchDashboardData();
   }, []);
 
-  const loadDashboardData = async () => {
+  const fetchDashboardData = async () => {
     try {
-      setLoading(true);
+      // 1. Gọi API Thống kê tổng hợp (Cái file Controller mới tạo)
+      const statsRes = await axios.get('http://localhost:5000/api/Dashboard/stats');
+      setStats(statsRes.data);
 
-      // Get statistics
-      const orders = await orderService.getAll();
-      const customers = await customerService.getAll();
-      const medicines = await medicineService.getAll();
-      const lowStock = medicines.filter((m) => m.isLowStock).length;
+      // 2. Gọi API lấy danh sách thuốc để lọc thuốc sắp hết hiện ra bảng
+      const medRes = await axios.get('http://localhost:5000/api/Medicines');
+      setMedicines(medRes.data.filter(m => m.currentStock <= m.minStockLevel));
 
-      const today = new Date().toISOString().split('T')[0];
-      const revenueData = await reportService.getRevenueByDate(today);
-
-      setStats({
-        totalOrders: orders.length,
-        totalRevenue: revenueData.revenue || 0,
-        totalCustomers: customers.length,
-        lowStockMedicines: lowStock,
-      });
-
-      // Get top medicines
-      const topMeds = await reportService.getTopMedicines(5);
-      setTopMedicines(topMeds);
-
-      // Get top customers
-      const topCusts = await reportService.getTopCustomers(5);
-      setTopCustomers(topCusts);
-
-      // Get recent orders
-      const recentOrds = orders.slice(-5).reverse();
-      setRecentOrders(recentOrds);
-    } catch (err) {
-      message.error('Lỗi khi tải dữ liệu bảng điều khiển');
-    } finally {
-      setLoading(false);
+    } catch (error) {
+      console.error("Lỗi tải dữ liệu dashboard:", error);
+      message.error("Không tải được dữ liệu bảng điều khiển");
     }
   };
 
-  const orderColumns = [
-    {
-      title: 'Mã đơn hàng',
-      dataIndex: 'orderCode',
-      key: 'orderCode',
-    },
-    {
-      title: 'Khách hàng',
-      dataIndex: 'customerName',
-      key: 'customerName',
-    },
-    {
-      title: 'Tổng tiền',
-      dataIndex: 'total',
-      key: 'total',
-      render: (total) => `${total.toLocaleString('vi-VN')} đ`,
-    },
-    {
-      title: 'Trạng thái',
-      dataIndex: 'orderStatus',
-      key: 'orderStatus',
-      render: (status) => (
-        <span
-          style={{
-            color: status === 'Completed' ? 'green' : 'orange',
-          }}
-        >
-          {status}
-        </span>
-      ),
-    },
-  ];
-
-  const medicineColumns = [
-    {
-      title: 'Tên thuốc',
-      dataIndex: 'name',
-      key: 'name',
-    },
-    {
-      title: 'Giá',
-      dataIndex: 'price',
-      key: 'price',
-      render: (price) => `${price.toLocaleString('vi-VN')} đ`,
-    },
-  ];
-
-  const customerColumns = [
-    {
-      title: 'Tên khách hàng',
-      dataIndex: 'name',
-      key: 'name',
-    },
-    {
-      title: 'Tổng chi tiêu',
-      dataIndex: 'totalSpending',
-      key: 'totalSpending',
-      render: (amount) => `${amount.toLocaleString('vi-VN')} đ`,
-    },
+  // Cấu hình bảng thuốc sắp hết
+  const columns = [
+    { title: 'Tên thuốc', dataIndex: 'name', key: 'name' },
+    { title: 'Tồn kho', dataIndex: 'currentStock', key: 'currentStock', render: t => <Tag color="red">{t}</Tag> },
+    { title: 'Định mức', dataIndex: 'minStockLevel', key: 'minStockLevel' },
+    { title: 'Đơn giá', dataIndex: 'price', key: 'price', render: p => p?.toLocaleString() },
   ];
 
   return (
-    <div>
-      <h1>Bảng điều khiển</h1>
-
-      {/* Statistics */}
-      <Row gutter={16} style={{ marginBottom: '24px' }}>
-        <Col xs={24} sm={12} lg={6}>
-          <Card loading={loading}>
+    <div style={{ padding: 20 }}>
+      <h2>Bảng điều khiển</h2>
+      
+      <Row gutter={16} style={{ marginBottom: 24 }}>
+        {/* Doanh thu */}
+        <Col span={6}>
+          <Card bordered={false}>
             <Statistic
-              title="Tổng đơn hàng"
-              value={stats.totalOrders}
-              prefix={<ShoppingCartOutlined />}
-              valueStyle={{ color: '#1890ff' }}
-            />
-          </Card>
-        </Col>
-        <Col xs={24} sm={12} lg={6}>
-          <Card loading={loading}>
-            <Statistic
-              title="Doanh thu hôm nay"
+              title="Doanh thu"
               value={stats.totalRevenue}
-              suffix="đ"
+              precision={0}
+              valueStyle={{ color: '#cf1322' }}
               prefix={<DollarOutlined />}
-              valueStyle={{ color: '#52c41a' }}
+              suffix="VNĐ"
             />
           </Card>
         </Col>
-        <Col xs={24} sm={12} lg={6}>
-          <Card loading={loading}>
+
+        {/* Đơn hàng */}
+        <Col span={6}>
+          <Card bordered={false}>
             <Statistic
-              title="Tổng khách hàng"
-              value={stats.totalCustomers}
-              prefix={<UserOutlined />}
-              valueStyle={{ color: '#722ed1' }}
+              title="Đơn hàng"
+              value={stats.totalOrders}
+              valueStyle={{ color: '#3f8600' }}
+              prefix={<ShoppingCartOutlined />}
             />
           </Card>
         </Col>
-        <Col xs={24} sm={12} lg={6}>
-          <Card loading={loading}>
+
+        {/* Khách hàng */}
+        <Col span={6}>
+          <Card bordered={false}>
+            <Statistic
+              title="Khách hàng"
+              value={stats.totalCustomers}
+              valueStyle={{ color: '#1890ff' }}
+              prefix={<UserOutlined />}
+            />
+          </Card>
+        </Col>
+
+        {/* Thuốc sắp hết */}
+        <Col span={6}>
+          <Card bordered={false}>
             <Statistic
               title="Thuốc sắp hết"
-              value={stats.lowStockMedicines}
-              prefix={<MedicineBoxOutlined />}
-              valueStyle={{ color: '#eb2f96' }}
+              value={stats.lowStock}
+              valueStyle={{ color: '#faad14' }}
+              prefix={<WarningOutlined />}
             />
           </Card>
         </Col>
       </Row>
 
-      {/* Charts and Tables */}
       <Row gutter={16}>
-        <Col xs={24} lg={12}>
-          <Card title="Sản phẩm bán chạy nhất" loading={loading}>
-            <Table
-              columns={medicineColumns}
-              dataSource={topMedicines}
-              pagination={false}
-              rowKey="id"
-            />
-          </Card>
-        </Col>
-        <Col xs={24} lg={12}>
-          <Card title="Khách hàng hàng đầu" loading={loading}>
-            <Table
-              columns={customerColumns}
-              dataSource={topCustomers}
-              pagination={false}
-              rowKey="id"
+        <Col span={24}>
+          <Card title="Danh sách thuốc cần nhập thêm (Sắp hết)" bordered={false}>
+            <Table 
+                dataSource={medicines} 
+                columns={columns} 
+                rowKey="id"
+                pagination={{ pageSize: 5 }}
             />
           </Card>
         </Col>
       </Row>
-
-      {/* Recent Orders */}
-      <Card title="Đơn hàng gần đây" style={{ marginTop: '24px' }} loading={loading}>
-        <Table
-          columns={orderColumns}
-          dataSource={recentOrders}
-          pagination={false}
-          rowKey="id"
-        />
-      </Card>
     </div>
   );
 }

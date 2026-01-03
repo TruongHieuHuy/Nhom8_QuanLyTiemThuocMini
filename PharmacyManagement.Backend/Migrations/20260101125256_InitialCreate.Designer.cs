@@ -12,8 +12,8 @@ using PharmacyManagement.Data;
 namespace PharmacyManagement.Backend.Migrations
 {
     [DbContext(typeof(PharmacyContext))]
-    [Migration("20251225153237_SeedAllTables")]
-    partial class SeedAllTables
+    [Migration("20260101125256_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,11 +34,9 @@ namespace PharmacyManagement.Backend.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Address")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("City")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedDate")
@@ -48,15 +46,12 @@ namespace PharmacyManagement.Backend.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("District")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Gender")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
@@ -66,18 +61,16 @@ namespace PharmacyManagement.Backend.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("TotalSpending")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Ward")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -88,36 +81,36 @@ namespace PharmacyManagement.Backend.Migrations
                         new
                         {
                             Id = 1,
-                            Address = "12 Lê Lợi, Q.1",
-                            City = "Hồ Chí Minh",
-                            CreatedDate = new DateTime(2025, 12, 25, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890),
-                            DateOfBirth = new DateTime(1990, 5, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            District = "Q.1",
-                            Email = "binh.nguyen@gmail.com",
+                            Address = "HCM",
+                            City = "HCM",
+                            CreatedDate = new DateTime(2026, 1, 1, 19, 52, 55, 933, DateTimeKind.Local).AddTicks(4584),
+                            DateOfBirth = new DateTime(1990, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            District = "Q1",
+                            Email = "binh@gmail.com",
                             Gender = "Nam",
                             IsActive = true,
-                            LastModifiedDate = new DateTime(2025, 12, 25, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890),
+                            LastModifiedDate = new DateTime(2026, 1, 1, 19, 52, 55, 933, DateTimeKind.Local).AddTicks(4584),
                             Name = "Nguyễn Văn Bình",
                             PhoneNumber = "0987654321",
                             TotalSpending = 500000m,
-                            Ward = "Bến Nghé"
+                            Ward = "Ben Nghe"
                         },
                         new
                         {
                             Id = 2,
-                            Address = "34 Nguyễn Trãi, Q.5",
-                            City = "Hồ Chí Minh",
-                            CreatedDate = new DateTime(2025, 12, 25, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890),
-                            DateOfBirth = new DateTime(1985, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            District = "Q.5",
-                            Email = "hoa.tran@gmail.com",
-                            Gender = "Nữ",
+                            Address = "HN",
+                            City = "HN",
+                            CreatedDate = new DateTime(2026, 1, 1, 19, 52, 55, 933, DateTimeKind.Local).AddTicks(4584),
+                            DateOfBirth = new DateTime(1995, 5, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            District = "HK",
+                            Email = "hoa@gmail.com",
+                            Gender = "Nu",
                             IsActive = true,
-                            LastModifiedDate = new DateTime(2025, 12, 25, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890),
+                            LastModifiedDate = new DateTime(2026, 1, 1, 19, 52, 55, 933, DateTimeKind.Local).AddTicks(4584),
                             Name = "Trần Thị Hoa",
                             PhoneNumber = "0978123456",
                             TotalSpending = 350000m,
-                            Ward = "Phạm Ngũ Lão"
+                            Ward = "Hang Bai"
                         });
                 });
 
@@ -133,46 +126,39 @@ namespace PharmacyManagement.Backend.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Department")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FullName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("LastModifiedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("PhoneNumber")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Position")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Salary")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Status")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserAccountId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int?>("UserAccountId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserAccountId")
-                        .IsUnique();
+                    b.HasIndex("UserAccountId");
 
                     b.ToTable("Employees");
 
@@ -180,17 +166,17 @@ namespace PharmacyManagement.Backend.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedDate = new DateTime(2025, 12, 25, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890),
+                            CreatedDate = new DateTime(2026, 1, 1, 19, 52, 55, 933, DateTimeKind.Local).AddTicks(4584),
                             Department = "Bán hàng",
                             Email = "nhanvien@example.com",
-                            FullName = "Nhân Viên Mặc Định",
-                            LastModifiedDate = new DateTime(2025, 12, 25, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890),
+                            FullName = "Nhân Viên Bán Hàng",
+                            LastModifiedDate = new DateTime(2026, 1, 1, 19, 52, 55, 933, DateTimeKind.Local).AddTicks(4584),
                             PhoneNumber = "0123456789",
                             Position = "Nhân Viên",
                             Salary = 10000000m,
-                            StartDate = new DateTime(2025, 12, 25, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890),
+                            StartDate = new DateTime(2026, 1, 1, 19, 52, 55, 933, DateTimeKind.Local).AddTicks(4584),
                             Status = "Active",
-                            UserAccountId = "f15eee25-c953-4dd3-9e46-95ac317bccb5"
+                            UserAccountId = 2
                         });
                 });
 
@@ -209,14 +195,12 @@ namespace PharmacyManagement.Backend.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Notes")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
                     b.Property<string>("Reason")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("StockAfter")
@@ -226,7 +210,6 @@ namespace PharmacyManagement.Backend.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("TransactionType")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -234,32 +217,6 @@ namespace PharmacyManagement.Backend.Migrations
                     b.HasIndex("MedicineId");
 
                     b.ToTable("InventoryHistories");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CreatedDate = new DateTime(2025, 12, 15, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890),
-                            MedicineId = 1,
-                            Notes = "",
-                            Quantity = 100,
-                            Reason = "Nhập hàng",
-                            StockAfter = 200,
-                            StockBefore = 100,
-                            TransactionType = "Import"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CreatedDate = new DateTime(2025, 12, 15, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890),
-                            MedicineId = 2,
-                            Notes = "",
-                            Quantity = 50,
-                            Reason = "Nhập hàng",
-                            StockAfter = 150,
-                            StockBefore = 100,
-                            TransactionType = "Import"
-                        });
                 });
 
             modelBuilder.Entity("PharmacyManagement.Models.Medicine", b =>
@@ -271,7 +228,6 @@ namespace PharmacyManagement.Backend.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Barcode")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedDate")
@@ -281,11 +237,9 @@ namespace PharmacyManagement.Backend.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Dosage")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("ExpiryDate")
@@ -298,7 +252,6 @@ namespace PharmacyManagement.Backend.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Manufacturer")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("MedicineGroupId")
@@ -308,18 +261,16 @@ namespace PharmacyManagement.Backend.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Price")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Unit")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Usage")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -333,13 +284,13 @@ namespace PharmacyManagement.Backend.Migrations
                         {
                             Id = 1,
                             Barcode = "8935206000012",
-                            CreatedDate = new DateTime(2025, 12, 25, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890),
+                            CreatedDate = new DateTime(2026, 1, 1, 19, 52, 55, 933, DateTimeKind.Local).AddTicks(4584),
                             CurrentStock = 200,
-                            Description = "Thuốc hạ sốt, giảm đau",
-                            Dosage = "1 viên/lần, 2-3 lần/ngày",
-                            ExpiryDate = new DateTime(2027, 12, 25, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890),
+                            Description = "Thuốc hạ sốt",
+                            Dosage = "1 viên/lần",
+                            ExpiryDate = new DateTime(2028, 1, 1, 19, 52, 55, 933, DateTimeKind.Local).AddTicks(4584),
                             IsActive = true,
-                            LastModifiedDate = new DateTime(2025, 12, 25, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890),
+                            LastModifiedDate = new DateTime(2026, 1, 1, 19, 52, 55, 933, DateTimeKind.Local).AddTicks(4584),
                             Manufacturer = "DHG Pharma",
                             MedicineGroupId = 3,
                             MinStockLevel = 20,
@@ -352,13 +303,13 @@ namespace PharmacyManagement.Backend.Migrations
                         {
                             Id = 2,
                             Barcode = "8935206000029",
-                            CreatedDate = new DateTime(2025, 12, 25, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890),
+                            CreatedDate = new DateTime(2026, 1, 1, 19, 52, 55, 933, DateTimeKind.Local).AddTicks(4584),
                             CurrentStock = 150,
-                            Description = "Kháng sinh phổ rộng",
-                            Dosage = "1 viên/lần, 2 lần/ngày",
-                            ExpiryDate = new DateTime(2027, 12, 25, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890),
+                            Description = "Kháng sinh",
+                            Dosage = "1 viên/lần",
+                            ExpiryDate = new DateTime(2028, 1, 1, 19, 52, 55, 933, DateTimeKind.Local).AddTicks(4584),
                             IsActive = true,
-                            LastModifiedDate = new DateTime(2025, 12, 25, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890),
+                            LastModifiedDate = new DateTime(2026, 1, 1, 19, 52, 55, 933, DateTimeKind.Local).AddTicks(4584),
                             Manufacturer = "Stada",
                             MedicineGroupId = 1,
                             MinStockLevel = 15,
@@ -371,13 +322,13 @@ namespace PharmacyManagement.Backend.Migrations
                         {
                             Id = 3,
                             Barcode = "8935206000036",
-                            CreatedDate = new DateTime(2025, 12, 25, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890),
+                            CreatedDate = new DateTime(2026, 1, 1, 19, 52, 55, 933, DateTimeKind.Local).AddTicks(4584),
                             CurrentStock = 300,
-                            Description = "Tăng sức đề kháng",
+                            Description = "Tăng đề kháng",
                             Dosage = "1 viên/ngày",
-                            ExpiryDate = new DateTime(2027, 12, 25, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890),
+                            ExpiryDate = new DateTime(2028, 1, 1, 19, 52, 55, 933, DateTimeKind.Local).AddTicks(4584),
                             IsActive = true,
-                            LastModifiedDate = new DateTime(2025, 12, 25, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890),
+                            LastModifiedDate = new DateTime(2026, 1, 1, 19, 52, 55, 933, DateTimeKind.Local).AddTicks(4584),
                             Manufacturer = "Traphaco",
                             MedicineGroupId = 4,
                             MinStockLevel = 30,
@@ -390,32 +341,32 @@ namespace PharmacyManagement.Backend.Migrations
                         {
                             Id = 4,
                             Barcode = "8935206000043",
-                            CreatedDate = new DateTime(2025, 12, 25, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890),
+                            CreatedDate = new DateTime(2026, 1, 1, 19, 52, 55, 933, DateTimeKind.Local).AddTicks(4584),
                             CurrentStock = 100,
-                            Description = "Điều trị tiêu chảy",
-                            Dosage = "1 gói/lần, 2 lần/ngày",
-                            ExpiryDate = new DateTime(2027, 12, 25, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890),
+                            Description = "Trị tiêu chảy",
+                            Dosage = "1 gói/lần",
+                            ExpiryDate = new DateTime(2028, 1, 1, 19, 52, 55, 933, DateTimeKind.Local).AddTicks(4584),
                             IsActive = true,
-                            LastModifiedDate = new DateTime(2025, 12, 25, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890),
+                            LastModifiedDate = new DateTime(2026, 1, 1, 19, 52, 55, 933, DateTimeKind.Local).AddTicks(4584),
                             Manufacturer = "Ipsen",
                             MedicineGroupId = 5,
                             MinStockLevel = 10,
                             Name = "Smecta",
                             Price = 8000m,
                             Unit = "Gói",
-                            Usage = "Pha với nước"
+                            Usage = "Pha nước"
                         },
                         new
                         {
                             Id = 5,
                             Barcode = "8935206000050",
-                            CreatedDate = new DateTime(2025, 12, 25, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890),
+                            CreatedDate = new DateTime(2026, 1, 1, 19, 52, 55, 933, DateTimeKind.Local).AddTicks(4584),
                             CurrentStock = 120,
-                            Description = "Giảm đau, hạ sốt",
-                            Dosage = "1 viên/lần, 2 lần/ngày",
-                            ExpiryDate = new DateTime(2027, 12, 25, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890),
+                            Description = "Giảm đau",
+                            Dosage = "1 viên/lần",
+                            ExpiryDate = new DateTime(2028, 1, 1, 19, 52, 55, 933, DateTimeKind.Local).AddTicks(4584),
                             IsActive = true,
-                            LastModifiedDate = new DateTime(2025, 12, 25, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890),
+                            LastModifiedDate = new DateTime(2026, 1, 1, 19, 52, 55, 933, DateTimeKind.Local).AddTicks(4584),
                             Manufacturer = "Sanofi",
                             MedicineGroupId = 2,
                             MinStockLevel = 12,
@@ -435,14 +386,12 @@ namespace PharmacyManagement.Backend.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -508,14 +457,6 @@ namespace PharmacyManagement.Backend.Migrations
                     b.HasIndex("PromotionId");
 
                     b.ToTable("MedicinePromotions");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            MedicineId = 3,
-                            PromotionId = 2
-                        });
                 });
 
             modelBuilder.Entity("PharmacyManagement.Models.Notification", b =>
@@ -539,37 +480,20 @@ namespace PharmacyManagement.Backend.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Message")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NotificationType")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RecipientType")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.ToTable("Notifications");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CreatedDate = new DateTime(2025, 12, 25, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890),
-                            EmployeeId = 1,
-                            IsRead = false,
-                            Message = "Paracetamol 500mg sắp hết hàng.",
-                            NotificationType = "Stock",
-                            RecipientType = "Employee",
-                            Title = "Hết hàng Paracetamol"
-                        });
                 });
 
             modelBuilder.Entity("PharmacyManagement.Models.Order", b =>
@@ -583,41 +507,41 @@ namespace PharmacyManagement.Backend.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("CustomerId")
+                    b.Property<int?>("CustomerId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Discount")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("EmployeeId")
+                    b.Property<int?>("EmployeeId")
                         .HasColumnType("int");
 
                     b.Property<string>("Notes")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("OrderCode")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("OrderStatus")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PaymentMethod")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("SubTotal")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("Tax")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("Total")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
@@ -632,34 +556,34 @@ namespace PharmacyManagement.Backend.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedDate = new DateTime(2025, 12, 23, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890),
+                            CreatedDate = new DateTime(2025, 12, 31, 19, 52, 55, 933, DateTimeKind.Local).AddTicks(4584),
                             CustomerId = 1,
-                            Discount = 10000m,
+                            Discount = 0m,
                             EmployeeId = 1,
-                            Notes = "",
-                            OrderCode = "ORD0001",
-                            OrderDate = new DateTime(2025, 12, 23, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890),
+                            Notes = "Khách quen",
+                            OrderCode = "HD001",
+                            OrderDate = new DateTime(2025, 12, 31, 19, 52, 55, 933, DateTimeKind.Local).AddTicks(4584),
                             OrderStatus = "Completed",
                             PaymentMethod = "Cash",
-                            SubTotal = 100000m,
-                            Tax = 1000m,
-                            Total = 91000m
+                            SubTotal = 150000m,
+                            Tax = 0m,
+                            Total = 150000m
                         },
                         new
                         {
                             Id = 2,
-                            CreatedDate = new DateTime(2025, 12, 24, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890),
+                            CreatedDate = new DateTime(2026, 1, 1, 19, 52, 55, 933, DateTimeKind.Local).AddTicks(4584),
                             CustomerId = 2,
                             Discount = 20000m,
                             EmployeeId = 1,
                             Notes = "",
-                            OrderCode = "ORD0002",
-                            OrderDate = new DateTime(2025, 12, 24, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890),
+                            OrderCode = "HD002",
+                            OrderDate = new DateTime(2026, 1, 1, 19, 52, 55, 933, DateTimeKind.Local).AddTicks(4584),
                             OrderStatus = "Completed",
                             PaymentMethod = "Card",
                             SubTotal = 200000m,
-                            Tax = 2000m,
-                            Total = 182000m
+                            Tax = 0m,
+                            Total = 180000m
                         });
                 });
 
@@ -681,9 +605,11 @@ namespace PharmacyManagement.Backend.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("TotalPrice")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("UnitPrice")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
@@ -707,29 +633,11 @@ namespace PharmacyManagement.Backend.Migrations
                         new
                         {
                             Id = 2,
-                            MedicineId = 3,
-                            OrderId = 1,
-                            Quantity = 5,
-                            TotalPrice = 6000m,
-                            UnitPrice = 1200m
-                        },
-                        new
-                        {
-                            Id = 3,
                             MedicineId = 2,
                             OrderId = 2,
-                            Quantity = 20,
-                            TotalPrice = 50000m,
+                            Quantity = 5,
+                            TotalPrice = 12500m,
                             UnitPrice = 2500m
-                        },
-                        new
-                        {
-                            Id = 4,
-                            MedicineId = 4,
-                            OrderId = 2,
-                            Quantity = 10,
-                            TotalPrice = 80000m,
-                            UnitPrice = 8000m
                         });
                 });
 
@@ -745,10 +653,10 @@ namespace PharmacyManagement.Backend.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("DiscountValue")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("EndDate")
@@ -767,57 +675,20 @@ namespace PharmacyManagement.Backend.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PromotionType")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("TargetCustomer")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.ToTable("Promotions");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CreatedDate = new DateTime(2025, 12, 25, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890),
-                            Description = "Giảm 10% cho đơn từ 200k",
-                            DiscountValue = 10m,
-                            EndDate = new DateTime(2026, 1, 14, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890),
-                            IsActive = true,
-                            IsPercentage = true,
-                            LastModifiedDate = new DateTime(2025, 12, 25, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890),
-                            MinOrderAmount = 200000,
-                            Name = "Giảm giá mùa hè",
-                            PromotionType = "Discount",
-                            StartDate = new DateTime(2025, 12, 15, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890),
-                            TargetCustomer = "All"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CreatedDate = new DateTime(2025, 12, 25, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890),
-                            Description = "Tặng 1 hộp Vitamin C cho đơn trên 500k",
-                            DiscountValue = 0m,
-                            EndDate = new DateTime(2026, 1, 19, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890),
-                            IsActive = true,
-                            IsPercentage = false,
-                            LastModifiedDate = new DateTime(2025, 12, 25, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890),
-                            MinOrderAmount = 500000,
-                            Name = "Tặng Vitamin C",
-                            PromotionType = "Gift",
-                            StartDate = new DateTime(2025, 12, 20, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890),
-                            TargetCustomer = "VIP"
-                        });
                 });
 
             modelBuilder.Entity("PharmacyManagement.Models.PurchaseOrder", b =>
@@ -835,24 +706,22 @@ namespace PharmacyManagement.Backend.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Notes")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("PurchaseOrderCode")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Status")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("SupplierId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("TotalCost")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
@@ -860,32 +729,6 @@ namespace PharmacyManagement.Backend.Migrations
                     b.HasIndex("SupplierId");
 
                     b.ToTable("PurchaseOrders");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CreatedDate = new DateTime(2025, 12, 15, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890),
-                            DeliveryDate = new DateTime(2025, 12, 17, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890),
-                            Notes = "",
-                            OrderDate = new DateTime(2025, 12, 15, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890),
-                            PurchaseOrderCode = "PO0001",
-                            Status = "Received",
-                            SupplierId = 1,
-                            TotalCost = 1000000m
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CreatedDate = new DateTime(2025, 12, 18, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890),
-                            DeliveryDate = new DateTime(2025, 12, 20, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890),
-                            Notes = "",
-                            OrderDate = new DateTime(2025, 12, 18, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890),
-                            PurchaseOrderCode = "PO0002",
-                            Status = "Received",
-                            SupplierId = 2,
-                            TotalCost = 500000m
-                        });
                 });
 
             modelBuilder.Entity("PharmacyManagement.Models.PurchaseOrderDetail", b =>
@@ -906,9 +749,11 @@ namespace PharmacyManagement.Backend.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("TotalCost")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("UnitCost")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
@@ -918,35 +763,6 @@ namespace PharmacyManagement.Backend.Migrations
                     b.HasIndex("PurchaseOrderId");
 
                     b.ToTable("PurchaseOrderDetails");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            MedicineId = 1,
-                            PurchaseOrderId = 1,
-                            Quantity = 100,
-                            TotalCost = 120000m,
-                            UnitCost = 1200m
-                        },
-                        new
-                        {
-                            Id = 2,
-                            MedicineId = 2,
-                            PurchaseOrderId = 1,
-                            Quantity = 50,
-                            TotalCost = 100000m,
-                            UnitCost = 2000m
-                        },
-                        new
-                        {
-                            Id = 3,
-                            MedicineId = 3,
-                            PurchaseOrderId = 2,
-                            Quantity = 200,
-                            TotalCost = 200000m,
-                            UnitCost = 1000m
-                        });
                 });
 
             modelBuilder.Entity("PharmacyManagement.Models.Supplier", b =>
@@ -958,25 +774,22 @@ namespace PharmacyManagement.Backend.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Address")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("City")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ContactPerson")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("Debt")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
@@ -986,78 +799,44 @@ namespace PharmacyManagement.Backend.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TaxNumber")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.ToTable("Suppliers");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Address = "288 Bis Nguyễn Văn Cừ, Cần Thơ",
-                            City = "Cần Thơ",
-                            ContactPerson = "Nguyễn Văn A",
-                            CreatedDate = new DateTime(2025, 12, 25, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890),
-                            Debt = 0m,
-                            Email = "contact@dhgpharma.com.vn",
-                            IsActive = true,
-                            LastModifiedDate = new DateTime(2025, 12, 25, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890),
-                            Name = "Công ty Dược Hậu Giang",
-                            PhoneNumber = "0909123456",
-                            TaxNumber = "1800106840"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Address = "75 Yên Ninh, Hà Nội",
-                            City = "Hà Nội",
-                            ContactPerson = "Trần Thị B",
-                            CreatedDate = new DateTime(2025, 12, 25, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890),
-                            Debt = 0m,
-                            Email = "info@traphaco.com.vn",
-                            IsActive = true,
-                            LastModifiedDate = new DateTime(2025, 12, 25, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890),
-                            Name = "Công ty Traphaco",
-                            PhoneNumber = "0912345678",
-                            TaxNumber = "0100108656"
-                        });
                 });
 
             modelBuilder.Entity("PharmacyManagement.Models.UserAccount", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime>("LastLoginDate")
+                    b.Property<DateTime?>("LastLoginDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("PasswordHash")
+                    b.Property<string>("PasswordAccount")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Role")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Username")
@@ -1071,23 +850,21 @@ namespace PharmacyManagement.Backend.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "d2af3ead-cbe2-42c8-b4b9-636f8340e9be",
-                            CreatedDate = new DateTime(2025, 12, 25, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890),
+                            Id = 1,
+                            CreatedDate = new DateTime(2026, 1, 1, 19, 52, 55, 933, DateTimeKind.Local).AddTicks(4584),
                             Email = "admin@example.com",
                             IsActive = true,
-                            LastLoginDate = new DateTime(2025, 12, 25, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890),
-                            PasswordHash = "AQAAAAEAACcQAAAAEJ6Qw1n6Qw1n6Qw1n6Qw1n6Qw1n6Qw1n6Qw1n6Qw1n6Qw1n6Qw1n6Qw1n6Qw1n6Qw==",
+                            PasswordAccount = "123",
                             Role = "Admin",
                             Username = "Admin123"
                         },
                         new
                         {
-                            Id = "f15eee25-c953-4dd3-9e46-95ac317bccb5",
-                            CreatedDate = new DateTime(2025, 12, 25, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890),
+                            Id = 2,
+                            CreatedDate = new DateTime(2026, 1, 1, 19, 52, 55, 933, DateTimeKind.Local).AddTicks(4584),
                             Email = "nhanvien@example.com",
                             IsActive = true,
-                            LastLoginDate = new DateTime(2025, 12, 25, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890),
-                            PasswordHash = "AQAAAAEAACcQAAAAEJ6Qw1n6Qw1n6Qw1n6Qw1n6Qw1n6Qw1n6Qw1n6Qw1n6Qw1n6Qw1n6Qw1n6Qw1n6Qw==",
+                            PasswordAccount = "123",
                             Role = "Employee",
                             Username = "NhanVien123"
                         });
@@ -1108,17 +885,16 @@ namespace PharmacyManagement.Backend.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Notes")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("OrdersProcessed")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Revenue")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Shift")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("WorkDate")
@@ -1129,28 +905,14 @@ namespace PharmacyManagement.Backend.Migrations
                     b.HasIndex("EmployeeId");
 
                     b.ToTable("WorkHistories");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CreatedDate = new DateTime(2025, 12, 24, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890),
-                            EmployeeId = 1,
-                            Notes = "",
-                            OrdersProcessed = 5,
-                            Revenue = 500000m,
-                            Shift = "Morning",
-                            WorkDate = new DateTime(2025, 12, 24, 22, 32, 37, 257, DateTimeKind.Local).AddTicks(4890)
-                        });
                 });
 
             modelBuilder.Entity("PharmacyManagement.Models.Employee", b =>
                 {
                     b.HasOne("PharmacyManagement.Models.UserAccount", "UserAccount")
-                        .WithOne("Employee")
-                        .HasForeignKey("PharmacyManagement.Models.Employee", "UserAccountId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .WithMany()
+                        .HasForeignKey("UserAccountId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("UserAccount");
                 });
@@ -1160,7 +922,7 @@ namespace PharmacyManagement.Backend.Migrations
                     b.HasOne("PharmacyManagement.Models.Medicine", "Medicine")
                         .WithMany("InventoryHistories")
                         .HasForeignKey("MedicineId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Medicine");
@@ -1199,16 +961,13 @@ namespace PharmacyManagement.Backend.Migrations
             modelBuilder.Entity("PharmacyManagement.Models.Order", b =>
                 {
                     b.HasOne("PharmacyManagement.Models.Customer", "Customer")
-                        .WithMany("Orders")
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .WithMany()
+                        .HasForeignKey("CustomerId");
 
                     b.HasOne("PharmacyManagement.Models.Employee", "Employee")
-                        .WithMany("Orders")
+                        .WithMany()
                         .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Customer");
 
@@ -1218,9 +977,9 @@ namespace PharmacyManagement.Backend.Migrations
             modelBuilder.Entity("PharmacyManagement.Models.OrderDetail", b =>
                 {
                     b.HasOne("PharmacyManagement.Models.Medicine", "Medicine")
-                        .WithMany("OrderDetails")
+                        .WithMany()
                         .HasForeignKey("MedicineId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("PharmacyManagement.Models.Order", "Order")
@@ -1239,7 +998,7 @@ namespace PharmacyManagement.Backend.Migrations
                     b.HasOne("PharmacyManagement.Models.Supplier", "Supplier")
                         .WithMany("PurchaseOrders")
                         .HasForeignKey("SupplierId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Supplier");
@@ -1250,7 +1009,7 @@ namespace PharmacyManagement.Backend.Migrations
                     b.HasOne("PharmacyManagement.Models.Medicine", "Medicine")
                         .WithMany()
                         .HasForeignKey("MedicineId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("PharmacyManagement.Models.PurchaseOrder", "PurchaseOrder")
@@ -1275,23 +1034,14 @@ namespace PharmacyManagement.Backend.Migrations
                     b.Navigation("Employee");
                 });
 
-            modelBuilder.Entity("PharmacyManagement.Models.Customer", b =>
-                {
-                    b.Navigation("Orders");
-                });
-
             modelBuilder.Entity("PharmacyManagement.Models.Employee", b =>
                 {
-                    b.Navigation("Orders");
-
                     b.Navigation("WorkHistories");
                 });
 
             modelBuilder.Entity("PharmacyManagement.Models.Medicine", b =>
                 {
                     b.Navigation("InventoryHistories");
-
-                    b.Navigation("OrderDetails");
                 });
 
             modelBuilder.Entity("PharmacyManagement.Models.MedicineGroup", b =>
@@ -1317,12 +1067,6 @@ namespace PharmacyManagement.Backend.Migrations
             modelBuilder.Entity("PharmacyManagement.Models.Supplier", b =>
                 {
                     b.Navigation("PurchaseOrders");
-                });
-
-            modelBuilder.Entity("PharmacyManagement.Models.UserAccount", b =>
-                {
-                    b.Navigation("Employee")
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
